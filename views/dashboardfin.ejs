@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>username here</title>
+</head>
+<body>
+    <h1>Dispatcher Panel</h1>
+
+    <h2>Name: <%= name %></h2>
+    <h2>ID: <%= icNumber %></h2>
+    <h2>Access Level: <%= position %></h2> <!-- Position level -->
+    <h3>Personal Contact: <%= contact %></h3>
+    <h3>Office Contact: <%= office %></h3>
+
+    <h3>Daily Report</h3>
+
+    <div id="w-node-d754e2f5-aed1-3892-5daf-5f26d402a898-ae93ce8f" class="html-embed w-embed">
+        <table id="myTable" class="table table-striped table-hover table-bordered table-responsive">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Date</th>
+              <th scope="col">Amount Collected</th>
+              <th scope="col">Parcel Given</th>
+              <th scope="col">Success Delivery</th>
+              <th scope="col">Failed Delivery</th>
+              <th scope="col">Cancelled Delivery</th>
+              <th scope="col">Change to Self Collect</th>
+              <th scope="col">Re-Schedule</th>
+              <th scope="col">Parcel Pickup</th>
+              <th scope="col">Return Parcel</th>
+            </tr>
+          </thead>
+
+
+          <% dispatch.forEach(dispatch => {%>
+          <tbody>
+            <tr class="content">
+              <th scope="row"><%= dispatch.name %></th>
+              <td><%= dispatch.dateSubmit %></td>
+              <td><%= dispatch.totalCollection %></td>
+              <td><%= dispatch.given %></td>
+              <td><%= dispatch.success %></td>
+              <td><%= dispatch.failed %></td>
+              <td><%= dispatch.cancel %></td>
+              <td><%= dispatch.selfCollect %></td>
+              <td><%= dispatch.reSchedule %></td>
+              <td><%= dispatch.pickup %></td>
+              <td><%= dispatch.pickupVal %></td>
+              <td><%= dispatch.return %></td>
+              <td><%= dispatch.returnVal %></td>
+            </tr>
+          </tbody>
+          <%})%>
+        </table>
+      </div>
+    
+    <h3>Navigation for user based on their access level</h3>
+    
+    
+</body>
+</html>
