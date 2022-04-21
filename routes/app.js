@@ -454,6 +454,11 @@ function itemOut(req,res){
     let tracker = {trackingNumber: req.body.trackingNum}
     let update = {status: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]" + "|" + date}
     let history = {history: {statusDetail: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]"  + "|" + date }}
+
+    let t = {
+        status: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]" + "|" + date,
+        $push: history
+}
     let option = {upsert: true, new: true}
     inventories.findOneAndUpdate(tracker,{$push: history}, option, (err,docs) => {
         if(err){
@@ -775,6 +780,7 @@ function iteminMy(req,res){
     })
 }
 
+
 //Item Out for Transit to BN
 function manifest(req,res){
     //let date = moment().format()
@@ -789,7 +795,6 @@ function manifest(req,res){
         })
     })
 }
-
 
 /*************************** GO RUSH MALAYSIA *********************************/
 
