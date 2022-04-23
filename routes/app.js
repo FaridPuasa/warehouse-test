@@ -255,17 +255,18 @@ router.get('/dispatcher-report', (req,res) => {
         })
     })
 })
-router.get('/',(req,res) => {
+
+/*router.get('/',(req,res) => {
     inventories.find({}, function(err,inventory){
         res.render('test', {
             itemList: inventory,
             moment: moment
         })
     })
-})
+})*/
 
 //Zalora In
-router.get('/itemin', (req,res) => {
+router.get('/', (req,res) => {
     res.render('itemin')
 })
 
