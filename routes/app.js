@@ -26,6 +26,30 @@ router.get('/zalora', (req,res)=> {
     })
 })
 
+router.get("/testing", (req,res) => {
+    res.render("tester")
+})
+
+router.post("/testcomplete", (req,res) => {
+    let testCB = req.body.testCB
+    if (testCB == "true"){
+        testCB = true
+        console.log("the box is check and true")
+        res.render("testcomplete", {
+            testCB: testCB,
+        })
+    }
+    else if (testCB == undefined){
+        testCB = false
+        console.log(testCB)
+        console.log("the box is uncheck and false")
+        res.render("testcomplete", {
+            testCB: testCB,
+        })
+    }
+    console.log(req.body.testCB)
+})
+
 /*************************** USER *********************************/
 
 router.get('/register', (req,res) => {
