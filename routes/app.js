@@ -26,6 +26,7 @@ router.get('/zalora', (req,res)=> {
     })
 })
 
+/* test for checkbox
 router.get("/testing", (req,res) => {
     res.render("tester")
 })
@@ -49,6 +50,7 @@ router.post("/testcomplete", (req,res) => {
     }
     console.log(req.body.testCB)
 })
+*/
 
 /*************************** USER *********************************/
 
@@ -317,6 +319,14 @@ router.get('/pod', (req,res) => {
 
 router.post('/confirmpod', (req,res) => {
     pod(req,res)
+})
+
+router.get('/podList', (req,res) => {
+    podDB.find({}, (err,pod) => {
+        res.render('podList', {
+            podList: pod,
+        })
+    })
 })
 
 //Zalora Re-Entry
