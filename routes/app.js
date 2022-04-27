@@ -52,6 +52,22 @@ router.post('/changesuccess', (req,res) => {
     firstTimeLogin(req,res)
 })
 
+router.get('/poddispatcher', (req,res) => {
+    res.render('podDispatch')
+})
+
+function dispatcher(req,res){
+    let body = req.body
+    let date = moment().format('L')
+    let tracker = body.trackingNum
+    let update = {task: "COMPLETED" + " | " + date,  }
+    let option = {upsert: true, new: true}
+    for (i = 0; i< tracker.length; i++){
+        let filter = {trackingNumber: tracker[i]}
+        
+    }
+}
+
 function userEditable(req,res){
     let body = req.body
     let filter = {icNumber: body.icNumber}
