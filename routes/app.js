@@ -56,18 +56,6 @@ router.get('/poddispatcher', (req,res) => {
     res.render('podDispatch')
 })
 
-function dispatcher(req,res){
-    let body = req.body
-    let date = moment().format('L')
-    let tracker = body.trackingNum
-    let update = {task: "COMPLETED" + " | " + date,  }
-    let option = {upsert: true, new: true}
-    for (i = 0; i< tracker.length; i++){
-        let filter = {trackingNumber: tracker[i]}
-        
-    }
-}
-
 function userEditable(req,res){
     let body = req.body
     let filter = {icNumber: body.icNumber}
@@ -424,10 +412,23 @@ function exportReturn(req,res){
     })
 }
 
-//This is used for end of day report
+//This is use for dispatcher to check their POD
+function dispatcherPod(req,res){
+    let body = req.body
+    let date = moment().format("L")
+    let tracker = body.trackingNum
+    let update = {status: "COMPLETED" + " | " + date, $push: {history: {statusDetail: "COMPLETED", dateUpdated: date,}}}
+    let option = {upsert: true, new: true}
+    for (i = 0; i< tracker.length; i++){
+        let filter = {trackingNumber: tracker[i], task: true}
+        inventories.findOneAndUpdate(filter, update, option)
+    }
+}
+
+//This is use for end of day report
 function dispatcherRecord(req,res){
     let dispatch = req.body
-    let date = moment().format(L)
+    let date = moment().format("L")
     let ref = "GR/Dispatch/" + dispatch.name + date
     let dispatcher = new dispatchDB({
         ref: ref,//Auto generate
@@ -519,6 +520,7 @@ function reEntry(req,res){
     })
 }
 
+//Item out into staging area
 function itemOut(req,res){
     let date = moment().format("L")
     let tracker = {trackingNumber: req.body.trackingNum}
@@ -590,7 +592,7 @@ function editableList(req,res){
     })
 }
 
-//Zalora Starts here
+//POD access by warehouse supervisor and transport controller
 function pod(req,res){
     let body = req.body
     let date = moment().format("L")
@@ -655,7 +657,7 @@ function pod(req,res){
     })
 }
 
-//zalora in
+//Item into warehouse
 function itemin(req,res){
     let parcelStatus = {statusDetail: "IN WAREHOUSE"+"["+req.body.area+"]"+ "|" + req.body.dateEntry}
     let bin = req.body.area +"/"+req.body.dateEntry
@@ -666,6 +668,8 @@ function itemin(req,res){
        contact: req.body.contact,
        address: req.body.address,
        area: req.body.area,
+       areaIndicator: req.body.areaLoc,
+       task: req.body.taskCB,
        product: req.body.formMETHOD,
        value: req.body.value,
        status: "IN WAREHOUSE" + "[" + req.body.area + "]",
