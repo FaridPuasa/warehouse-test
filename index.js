@@ -1,8 +1,16 @@
 const express = require('express')
 const app = express()
+const session = require('express-session')
 const routes = require('./routes/app');
 const bodyParser = require('body-parser')
 
+
+app.use(session({
+    secret: 'Unknown Value',
+    cookie: {maxAge: 2000},
+    saveUninitialized: false,
+    resave: false
+}))
 app.use(express.urlencoded({extended:true}))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))

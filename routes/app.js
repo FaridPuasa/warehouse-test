@@ -82,6 +82,14 @@ router.get('/poddispatcher', (req,res) => {
     res.render('podDispatch')
 })
 
+router.get('/logout', (req,res) => {
+    req.session.destroy()
+    let time = moment().format()
+    res.render('logout', {
+        time: time,
+    })
+})
+
 function userEditable(req,res){
     let body = req.body
     let filter = {icNumber: body.icNumber}
@@ -173,70 +181,86 @@ function user(req,res) {
 function login(req,res){
     let icNumber = req.body.icNumber
     let password = req.body.password
+    console.log(req.sessionID)
     userDB.authenticate(icNumber, password, (err, user) =>{
-        let firstTime = user.firstTime
-        let position = user.position
-        console.log(firstTime)
-        if(firstTime === "TRUE"){
-            res.render('changepassword', {icNumber: icNumber})
-        }
-        else if (firstTime === "FALSE"){
-            if (position == "AD"){
-                dispatchDB.find({}, (err,dispatch) => {
-                   res.render('dashboardad', {
-                        dispatch: dispatch,
-                        name: user.name,
-                        icNumber: user.icNumber,
-                        position: user.position,
-                        contact: user.contact,
-                        office: user.office
-                   })
-                })
-            }
-            else if (position == "TC"){res.render('dashboardfin')}
-            else if (position == "CS"){res.render('')}
-            else if (position == "WS"){res.render('')}
-            else if (position == "MW"){res.render('')}
-            else if (position == "TW"){res.render('')}
-            else if (position == "DIS"){
-                dispatchDB.find({}, function(err,dispatch) {
-                    res.render('dashboardDIS', {
-                        dispatch: dispatch,
-                        name: user.name,
-                        icNumber: user.icNumber,
-                        position: user.position,
-                        contact: user.contact,
-                        office: user.office,
-                    })
-                })  
-            }
-            else if (position == "DIS-EFR"){
-                dispatchDB.find({}, function(err,dispatch) {
-                    res.render('dashboardDIS', {
-                        dispatch: dispatch,
-                        name: user.name,
-                        icNumber: user.icNumber,
-                        position: user.position,
-                        contact: user.contact,
-                        office: user.office,
-                    })
-                })  
-            }
-            else if (position == "FIN"){res.render('')}
-            else {res.render('error',{
-                error_code: 'Error Code: 01', //access control error
-                head:'Invalid Access',
-                message:'Failed to detect access for user',
-                solution: "Please inform RDI, EXT 877"
-            })}
+        if(req.session.authenticated){
+            //res.json(req.session)
+            console.log(req.session)
         }
         else{
-            res.render('error', {
-                error_code: 'Error Code: 02',
-                head:'Invalid Entry',
-                message:'test',
-                solution: "none"
-            })
+            if (user){
+                req.session.authenticated = true
+                req.session.user = user
+                //res.json(req.session)
+                let firstTime = user.firstTime
+                let position = user.position
+                console.log(firstTime)
+                if(firstTime === "TRUE"){
+                    res.render('changepassword', {icNumber: icNumber})
+                }
+                else if (firstTime === "FALSE"){
+                    if (position == "AD"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                            dispatchDB.find({}, (err,dispatch) => {
+                                res.render('dashboardad', {
+                                    itemList: zaloraInventory,
+                                    dispatch: dispatch,
+                                    name: user.name,
+                                    icNumber: user.icNumber,
+                                    position: user.position,
+                                    contact: user.contact,
+                                    office: user.office
+                                })
+                            })
+                        })
+                        
+                    }
+                    else if (position == "TC"){res.render('dashboardfin')}
+                    else if (position == "CS"){res.render('')}
+                    else if (position == "WS"){res.render('')}
+                    else if (position == "MW"){res.render('')}
+                    else if (position == "TW"){res.render('')}
+                    else if (position == "DIS"){
+                        dispatchDB.find({}, function(err,dispatch) {
+                            res.render('dashboardDIS', {
+                                dispatch: dispatch,
+                                name: user.name,
+                                icNumber: user.icNumber,
+                                position: user.position,
+                                contact: user.contact,
+                                office: user.office,
+                            })
+                        })  
+                    }
+                    else if (position == "DIS-EFR"){
+                        dispatchDB.find({}, function(err,dispatch) {
+                            res.render('dashboardDIS', {
+                                dispatch: dispatch,
+                                name: user.name,
+                                icNumber: user.icNumber,
+                                position: user.position,
+                                contact: user.contact,
+                                office: user.office,
+                            })
+                        })  
+                    }
+                    else if (position == "FIN"){res.render('')}
+                    else {res.render('error',{
+                        error_code: 'Error Code: 01', //access control error
+                        head:'Invalid Access',
+                        message:'Failed to detect access for user',
+                        solution: "Please inform RDI, EXT 877"
+                    })}
+                }
+                else{
+                    res.render('error', {
+                        error_code: 'Error Code: 02',
+                        head:'Invalid Entry',
+                        message:'test',
+                        solution: "none"
+                    })
+                }
+            }
         }
     })
 }
