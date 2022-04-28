@@ -181,7 +181,18 @@ function login(req,res){
             res.render('changepassword', {icNumber: icNumber})
         }
         else if (firstTime === "FALSE"){
-            if (position == "AD"){res.render('dashboard')}
+            if (position == "AD"){
+                dispatchDB.find({}, (err,dispatch) => {
+                   res.render('dashboard', {
+                        dispatch: dispatch,
+                        name: user.name,
+                        icNumber: user.icNumber,
+                        position: user.position,
+                        contact: user.contact,
+                        office: user.office
+                   })
+                })
+            }
             else if (position == "TC"){res.render('dashboardfin')}
             else if (position == "CS"){res.render('')}
             else if (position == "WS"){res.render('')}
@@ -469,6 +480,7 @@ function dispatcherRecord(req,res){
         name: dispatch.name,
         carNumber: dispatch.car,
         given: dispatch.parcel, //Total Number of parcel given
+        unattempted: dispatch.unattempt,
         success: dispatch.success, //Total Number of parcel success
         selfCollect: dispatch.selfCollect, //Total Number of parcel changed to selfcollect
         failed: dispatch.failed, //Total Number of parcel failed

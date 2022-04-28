@@ -12,6 +12,7 @@ const dispatchSchema  = new mongoose.Schema({
     carNumber: reqString,
     given: reqString, //Total Number of parcel given
     success: reqString, //Total Number of parcel success
+    unattempted: reqString,
     failed: reqString, //Total Number of parcel failed
     reSchedule: reqString, //Total Number of parcel re-schedule
     cancel: reqString, //Total Number of parcel cancel
