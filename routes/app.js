@@ -183,7 +183,7 @@ function login(req,res){
         else if (firstTime === "FALSE"){
             if (position == "AD"){
                 dispatchDB.find({}, (err,dispatch) => {
-                   res.render('dashboard', {
+                   res.render('dashboardad', {
                         dispatch: dispatch,
                         name: user.name,
                         icNumber: user.icNumber,
