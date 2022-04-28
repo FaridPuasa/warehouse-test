@@ -17,6 +17,8 @@ const { render } = require('ejs');
 const { request } = require('express');
 const res = require('express/lib/response');
 
+let currentUser = {}
+
 router.get('/zalora', (req,res)=> {
     inventories.find({}, function(err,inventory){
         res.render('zalora', {
@@ -181,6 +183,7 @@ function user(req,res) {
 function login(req,res){
     let icNumber = req.body.icNumber
     let password = req.body.password
+    
     console.log(req.sessionID)
     userDB.authenticate(icNumber, password, (err, user) =>{
         if(req.session.authenticated){
@@ -191,6 +194,9 @@ function login(req,res){
             if (user){
                 req.session.authenticated = true
                 req.session.user = user
+                currentUser = user
+                //console.log(currentUser)
+                console.log(user)
                 //res.json(req.session)
                 let firstTime = user.firstTime
                 let position = user.position
@@ -251,6 +257,7 @@ function login(req,res){
                         message:'Failed to detect access for user',
                         solution: "Please inform RDI, EXT 877"
                     })}
+                    
                 }
                 else{
                     res.render('error', {
@@ -331,8 +338,13 @@ router.get('/dispatcher-report', (req,res) => {
 })*/
 
 //Zalora In
-router.get('/', (req,res) => {
-    res.render('itemin')
+router.get('/itemin', (req,res) => {
+    res.render('itemin', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
+    console.log(currentUser.position)
 })
 
 router.post('/itemin',(req,res) => {
@@ -341,7 +353,11 @@ router.post('/itemin',(req,res) => {
 
 //Zalora Out
 router.get('/itemout',(req,res) => {
-    res.render('itemout')
+    res.render('itemout', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
 })
 
 router.post('/confirm',(req,res) => {
@@ -349,7 +365,11 @@ router.post('/confirm',(req,res) => {
 })
 
 router.get('/pod', (req,res) => {
-    res.render('pod')
+    res.render('pod', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
 })
 
 router.post('/confirmpod', (req,res) => {
@@ -366,7 +386,11 @@ router.get('/podList', (req,res) => {
 
 //Zalora Re-Entry
 router.get('/reentry', (req,res) => {
-    res.render('reEntry')
+    res.render('reEntry', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
 })
 
 router.post('/reentryConfirm', (req,res) =>{
@@ -375,7 +399,11 @@ router.post('/reentryConfirm', (req,res) =>{
 
 //Zalora Dispatcher Report
 router.get('/dispatch',(req,res) => {
-    res.render('dispatch')
+    res.render('dispatch', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
 })
 
 router.post('/dispatchSuccess', (req,res) => {
@@ -391,6 +419,9 @@ router.get('/return', (req,res) => {
         })
         res.render('return',{
             zalora: zaloraList,
+            name: currentUser.name,
+            icNumber: currentUser.icNumber,
+            position: currentUser.position,
         })
     })
    
@@ -402,7 +433,11 @@ router.post('/success', (req,res) => {
 
 //Zalora Self Collect
 router.get('/selfcollect', (req,res) => {
-    res.render('selfCollect')
+    res.render('selfCollect', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
 })
 
 router.post('/confirmed', (req,res) => {
@@ -410,7 +445,7 @@ router.post('/confirmed', (req,res) => {
 })
 
 
-//This is used for return details
+//This is used for return details >>>>> ADD USER <<<<<<
 function exportReturn(req,res){
     //let date = moment().format()
     let filter = {trackingNumber: req.body.trackingNumber}
@@ -537,7 +572,7 @@ function dispatcherRecord(req,res){
     })
 }
 
-//reEntry parcels
+//reEntry parcels >>>>>>>>> ADD USER <<<<<<<<<<<<
 function reEntry(req,res){
     //let date = moment().format();
     let filter = {trackingNumber: req.body.trackingNumber}
@@ -594,7 +629,18 @@ function reEntry(req,res){
 function itemOut(req,res){
     let date = moment().format("L")
     let tracker = {trackingNumber: req.body.trackingNum}
-    let update = {status: "OUT FOR DELIVERY " + "[" + req.body.agentName + "]" + "|" + date, $push:{history: {statusDetail: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]" , dateUpdated: date}}}
+    let update = {
+        status: "OUT FOR DELIVERY " + "[" + req.body.agentName + "]" + "|" + date, 
+        $push:{
+            history: {
+                statusDetail: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]" , 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
     let option = {upsert: true, new: true}
     inventories.findOneAndUpdate(tracker,update,option,(err,docs) => {
         if(err){
@@ -671,7 +717,18 @@ function pod(req,res){
     console.log(tracker)
     for (let i = 0; i < tracker.length; i++){
         let filter = {trackingNumber: tracker[i]}
-        let update = {status: "SCHEDULED FOR DELIVERY" + "|" + body.dateAssign, $push: {history: {statusDetail: "SCHEDULED FOR DELIVERY", dateUpdated: date }}}
+        let update = {
+            status: "SCHEDULED FOR DELIVERY" + "|" + body.dateAssign, 
+            $push: {
+                history: {
+                    statusDetail: "SCHEDULED FOR DELIVERY", 
+                    dateUpdated: date,
+                    updateBy: req.body.userName, 
+                    updateById: req.body.userID, 
+                    updateByPos: req.body.pos 
+                }
+            }
+        }
         let option = {upsert: true, new: true}
         console.log(filter)
         inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
@@ -729,7 +786,13 @@ function pod(req,res){
 
 //Item into warehouse
 function itemin(req,res){
-    let parcelStatus = {statusDetail: "IN WAREHOUSE"+"["+req.body.area+"]"+ "|" + req.body.dateEntry}
+    let parcelStatus = {
+        statusDetail: "IN WAREHOUSE"+"["+req.body.area+"]"+ "|" + req.body.dateEntry, 
+        updateBy: req.body.userName, 
+        updateById: req.body.userID, 
+        updateByPos: req.body.pos
+    }
+
     let bin = req.body.area +"/"+req.body.dateEntry
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,
@@ -750,6 +813,9 @@ function itemin(req,res){
        attemp: "FALSE",
        reSchedule: req.body.reSchedule,
        dateEntry: req.body.dateEntry,
+       userName: req.body.username,
+       userID: req.body.userID,
+       userPos: req.body.userPos,
        count: 0,
     })
     console.log(inventories)
@@ -772,7 +838,17 @@ function itemin(req,res){
 function selfCollect(req,res){
     let date = moment().format("L");
     let filter = {trackingNumber: req.body.trackingNum}
-    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + "|" + date, $push:{history: {statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", dateUpdated: date}}}
+    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + "|" + date, 
+        $push:{
+            history: {
+                statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
     let option = {upsert: true, new: true}
     console.log(req.body.trackingNum)
     console.log(filter)
