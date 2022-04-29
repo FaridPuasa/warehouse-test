@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const bcrypt = require('bcrypt')
+const fastCsv = require('fast-csv')
+
 //Models listing
 //const statusDB = require('../models/inventory')
 const inventories = require('../models/invetories');
@@ -18,6 +20,50 @@ const { request } = require('express');
 const res = require('express/lib/response');
 
 let currentUser = {}
+
+//exporting data from mongo to csv
+
+router.post('/exportInventories', (req,res) => {
+    csvExport(req,res)
+})
+
+function csvExport(req,res) {
+    let dateStart = req.body.dateStart
+    let dateEnd = req.body.dateEnd
+
+    const transformer = (doc)=> {
+        return {
+            trackingNumber: doc.trackingNumber,
+            parcelNumber: doc.parcelNumber,
+            name: doc.name,
+            contact: doc.contact,
+            address: doc.address,
+            area: doc.area,
+            areaIndicator: doc.areaIndicator,
+            product: doc.product,
+            value: doc.value,
+            reEntry: doc.reEntry,
+            attemp: doc.attemp,
+            count: doc.count,
+            dateEntry: doc.dateEntry,
+            entryDate: doc.entryDate,
+            expireDate:doc.expireDate,
+            status: doc.status,
+            userName: doc.userName,
+            userPos: doc.userPos,
+        };
+    }
+
+    const filename = 'export.csv';
+    const cursor = inventories.find()
+
+    res.setHeader('Content-disposition', `attachment; filename=${filename}`);
+    res.writeHead(200, { 'Content-Type': 'text/csv' });
+    res.flushHeaders();
+    var csvStream = fastCsv.format({headers: true}).transform(transformer)
+    cursor.stream().pipe(csvStream).pipe(res);
+}
+
 
 router.get('/zalora', (req,res)=> {
     inventories.find({}, function(err,inventory){
