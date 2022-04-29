@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const bcrypt = require('bcrypt')
-const fastCsv = require('fast-csv')
+//const fastCsv = require('fast-csv')
 
 //Models listing
 //const statusDB = require('../models/inventory')
@@ -267,14 +267,59 @@ function login(req,res){
                         })
                         
                     }
-                    else if (position == "TC"){res.render('dashboardfin')}
+                    else if (position == "TC"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                            dispatchDB.find({}, (err,dispatch) => {
+                                res.render('dashboardTc', {
+                                    itemList: zaloraInventory,
+                                    dispatch: dispatch,
+                                    name: user.name,
+                                    icNumber: user.icNumber,
+                                    position: user.position,
+                                    contact: user.contact,
+                                    office: user.office
+                                })
+                            })
+                        })
+                        
+                    }
                     else if (position == "CS"){res.render('')}
-                    else if (position == "WS"){res.render('')}
-                    else if (position == "MW"){res.render('')}
+                    else if (position == "WS"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                            dispatchDB.find({}, (err,dispatch) => {
+                                res.render('dashboardWs', {
+                                    itemList: zaloraInventory,
+                                    dispatch: dispatch,
+                                    name: user.name,
+                                    icNumber: user.icNumber,
+                                    position: user.position,
+                                    contact: user.contact,
+                                    office: user.office
+                                })
+                            })
+                        })
+                        
+                    }
+                    else if (position == "MW"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                            dispatchDB.find({}, (err,dispatch) => {
+                                res.render('dashboardWa', {
+                                    itemList: zaloraInventory,
+                                    dispatch: dispatch,
+                                    name: user.name,
+                                    icNumber: user.icNumber,
+                                    position: user.position,
+                                    contact: user.contact,
+                                    office: user.office
+                                })
+                            })
+                        })
+                        
+                    }
                     else if (position == "TW"){res.render('')}
                     else if (position == "DIS"){
                         dispatchDB.find({}, function(err,dispatch) {
-                            res.render('dashboardDIS', {
+                            res.render('dashboardDis', {
                                 dispatch: dispatch,
                                 name: user.name,
                                 icNumber: user.icNumber,
