@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const bcrypt = require('bcrypt')
+<<<<<<< Updated upstream
 //const fastCsv = require('fast-csv')
+=======
+const fastCsv = require('fast-csv')
+const stream = require('stream')
+>>>>>>> Stashed changes
 
 //Models listing
 //const statusDB = require('../models/inventory')
