@@ -624,6 +624,7 @@ function dispatcherRecord(req,res){
     let dispatcher = new dispatchDB({
         ref: ref,//Auto generate
         name: dispatch.name,
+        userID: dispatch.userID,
         carNumber: dispatch.car,
         given: dispatch.parcel, //Total Number of parcel given
         unattempted: dispatch.unattempt,

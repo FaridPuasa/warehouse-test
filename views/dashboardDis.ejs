@@ -318,6 +318,7 @@
 
 
                 <% dispatch.forEach(dispatch => {%>
+                 <% if (userID == dispatch.icNumber) %>
                 <tbody>
                   <tr class="content">
                     <th scope="row"><%= dispatch.name %></th>
@@ -335,7 +336,8 @@
                     <td><%= dispatch.returnVal %></td>
                   </tr>
                 </tbody>
-                <%})%>
+                
+                <%}})%>
               </table>
             </div>
           </div>
