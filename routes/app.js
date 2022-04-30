@@ -624,6 +624,7 @@ function dispatcherRecord(req,res){
     let dispatcher = new dispatchDB({
         ref: ref,//Auto generate
         name: dispatch.name,
+        userID: dispatch.userID,
         carNumber: dispatch.car,
         given: dispatch.parcel, //Total Number of parcel given
         unattempted: dispatch.unattempt,
@@ -846,6 +847,7 @@ function pod(req,res){
         podArea: body.areaCode,
         podCreate: body.dateCreate,
         podMade: body.madeBy,
+        podAgentId: body.agentID,
         trackingNum: body.trackingNumC,
         name: body.contactNameC,
         contact: body.phoneC,

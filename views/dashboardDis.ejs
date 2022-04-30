@@ -228,7 +228,7 @@
                     <div class="_w-navlinks">
                       <div class="c-navlink-text">
                         <div data-w-id="056379ae-91d2-b38c-8fcb-862d830cb0b0" class="_w-navlink-text">
-                          <div data-w-id="056379ae-91d2-b38c-8fcb-862d830cb0b1" class="navlink-text">&lt;%= icNumber %&gt; &lt;%= position %&gt;</div>
+                          <div data-w-id="056379ae-91d2-b38c-8fcb-862d830cb0b1" class="navlink-text"><%= icNumber %> | <%= position %></div>
                           <div data-w-id="056379ae-91d2-b38c-8fcb-862d830cb0b3" class="navlink-text">&lt;%= contact %&gt; | &lt;%= office %&gt;</div>
                         </div>
                       </div>
@@ -318,6 +318,7 @@
 
 
                 <% dispatch.forEach(dispatch => {%>
+                 <% if (dispatch.userID == icNumber){ %>
                 <tbody>
                   <tr class="content">
                     <th scope="row"><%= dispatch.name %></th>
@@ -335,7 +336,8 @@
                     <td><%= dispatch.returnVal %></td>
                   </tr>
                 </tbody>
-                <%})%>
+                
+                <%}})%>
               </table>
             </div>
           </div>
