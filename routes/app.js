@@ -2,12 +2,7 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const bcrypt = require('bcrypt')
-<<<<<<< Updated upstream
 //const fastCsv = require('fast-csv')
-=======
-const fastCsv = require('fast-csv')
-const stream = require('stream')
->>>>>>> Stashed changes
 
 //Models listing
 //const statusDB = require('../models/inventory')
@@ -27,10 +22,6 @@ const res = require('express/lib/response');
 let currentUser = {}
 
 //exporting data from mongo to csv
-
-router.post('/exportInventories', (req,res) => {
-    csvExport(req,res)
-})
 
 function csvExport(req,res) {
     let dateStart = req.body.dateStart
@@ -70,7 +61,7 @@ function csvExport(req,res) {
 }
 
 
-router.get('/zalora', (req,res)=> {
+router.get('/acess/zalora', (req,res)=> {
     inventories.find({}, function(err,inventory){
         res.render('zalora', {
             itemList: inventory,
