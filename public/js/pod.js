@@ -499,6 +499,30 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 document.getElementById("agentName").value = "EFR ASIKIN";
             }
 
+            if (document.getElementById("agentTemp").value == "1359048") {
+                document.getElementById("agentName").value = "FD SAIFUDDIN";
+            }
+
+            if (document.getElementById("agentTemp").value == "1358816") {
+                document.getElementById("agentName").value = "FD AMIN";
+            }
+
+            if (document.getElementById("agentTemp").value == "1354406") {
+                document.getElementById("agentName").value = "EFR ISMADY";
+            }
+
+            if (document.getElementById("agentTemp").value == "1362520") {
+                document.getElementById("agentName").value = "EFR AMALIA";
+            }
+            
+            if (document.getElementById("agentTemp").value == "1352241") {
+                document.getElementById("agentName").value = "EFR HAFIZ";
+            }
+
+            if (document.getElementById("agentTemp").value == "1358835") {
+                document.getElementById("agentName").value = "EFR MDAMY";
+            }
+
             if (document.getElementById("agentTemp").value == "1003154") {
                 document.getElementById("agentName").value = "IFR DYLAN";
             }
