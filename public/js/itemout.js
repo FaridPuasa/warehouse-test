@@ -176,78 +176,9 @@ function checkTrackingNum(field, autoMove) {
             document.getElementById("agentName").value = "IFR DYLAN";
         }
 
-        var request = new XMLHttpRequest();
-
-        if (assignTaskToAgent == 0) {
-            request.open('POST', 'https://api.tookanapp.com/v2/assign_task');
-            request.setRequestHeader('Content-Type', 'application/json');
-
-            request.onreadystatechange = function () {
-                if ((this.readyState === 4) && (assignTaskToAgent == 0)) {
-                    console.log('Status:', this.status);
-                    console.log('Headers:', this.getAllResponseHeaders());
-                    console.log('Body:', this.responseText);
-
-                    var responsetn = this.responseText;
-                    var json_responsetn = JSON.parse(responsetn);
-
-                    if (json_responsetn.status != 404) {
-                        document.getElementById(autoMove).focus();
-
-                        request.open('POST', 'https://api.tookanapp.com/v2/change_job_date');
-                        request.setRequestHeader('Content-Type', 'application/json');
-
-                        request.onreadystatechange = function () {
-                            if ((this.readyState === 4) && (assignDateTimeToTask == 0)) {
-                                console.log('Status:', this.status);
-                                console.log('Headers:', this.getAllResponseHeaders());
-                                console.log('Body:', this.responseText);
-
-                                assignDateTimeToTask = 1;
-
-                                document.getElementById("loading").style.display = 'none';
-                                document.getElementById("inputAgentArea").style.display = 'block';
-                                document.getElementById("inputTnArea").style.display = 'block';
-                                document.getElementById("completeTimeNotice").style.display = 'block';
-
-                                // Set Item
-                                localStorage.setItem("lastAgent", document.getElementById("agent").value);
-
-                                document.getElementById("itemOut").submit();
-                            }
-                        };
-
-                        var body = {
-                            'api_key': '51676580f24b091114132d38111925401ee4c2f328d978375e1f03',
-                            "job_ids": [jobidentitynum],
-                            'layout_type': 0,
-                            'start_time': document.getElementById("dateTime").value,
-                            'end_time': document.getElementById("dateTimeClose").value
-                        };
-                        request.send(JSON.stringify(body));
-
-                        assignTaskToAgent = 1;
-                    }
-
-                    if (json_responsetn.status == 404) {
-                        document.getElementById("trackingNumber").value = "";
-                        document.getElementById("loading").style.display = 'none';
-                        document.getElementById("wronginput").style.display = 'block';
-                        document.getElementById("inputAgentArea").style.display = 'block';
-                        document.getElementById("inputTnArea").style.display = 'block';
-                        document.getElementById("completeTimeNotice").style.display = 'block';
-                    }
-                }
-            };
-
-            var body = {
-                'api_key': '51676580f24b091114132d38111925401ee4c2f328d978375e1f03',
-                'job_id': jobidentitynum,
-                'fleet_id': document.getElementById("agent").value,
-                'job_status': '0'
-            };
-            request.send(JSON.stringify(body));
-        }
+        document.getElementById(autoMove).focus();
+        localStorage.setItem("lastAgent", document.getElementById("agent").value);
+        document.getElementById("itemOut").submit();
     }
 }
 
