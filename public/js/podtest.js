@@ -492,6 +492,34 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 document.getElementById("agentName").value = "EFR ASIKIN";
             }
 
+            if (document.getElementById("agentTemp").value == "1359048") {
+                document.getElementById("agentName").value = "FD SAIFUDDIN";
+            }
+
+            if (document.getElementById("agentTemp").value == "1358816") {
+                document.getElementById("agentName").value = "FD AMIN";
+            }
+
+            if (document.getElementById("agentTemp").value == "1354406") {
+                document.getElementById("agentName").value = "EFR ISMADY";
+            }
+
+            if (document.getElementById("agentTemp").value == "1362520") {
+                document.getElementById("agentName").value = "EFR AMALIA";
+            }
+
+            if (document.getElementById("agentTemp").value == "1352241") {
+                document.getElementById("agentName").value = "EFR HAFIZ";
+            }
+
+            if (document.getElementById("agentTemp").value == "1358835") {
+                document.getElementById("agentName").value = "EFR MDAMY";
+            }
+
+            if (document.getElementById("agentTemp").value == "1003154") {
+                document.getElementById("agentName").value = "IFR DYLAN";
+            }
+
             if (document.getElementById("agentTemp").value == "1003154") {
                 document.getElementById("agentName").value = "IFR DYLAN";
             }
@@ -588,4 +616,71 @@ document.addEventListener("DOMContentLoaded", function (event) {
         document.getElementById("excelDbArea").style.display = 'block';
         document.getElementById("inputTnArea").style.display = 'none';
     }
+
+    document.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let countFinalTN = $('[name=trackingNumC]').length;
+
+        for (let i = 0; i < countFinalTN; i++) {
+            var assignTaskToAgent = 0;
+            var assignDateTimeToTask = 0;
+
+            var checkTN = $('[name=trackingNumC]')[i].value;
+
+            var request = new XMLHttpRequest();
+
+            if (assignTaskToAgent == 0) {
+                request.open('POST', 'https://api.tookanapp.com/v2/assign_task');
+                request.setRequestHeader('Content-Type', 'application/json');
+
+                request.onreadystatechange = function () {
+                    if ((this.readyState === 4) && (assignTaskToAgent == 0)) {
+                        console.log('Status:', this.status);
+                        console.log('Headers:', this.getAllResponseHeaders());
+                        console.log('Body:', this.responseText);
+
+                        var responsetn = this.responseText;
+                        var json_responsetn = JSON.parse(responsetn);
+
+                        if (json_responsetn.status != 404) {
+
+                            request.open('POST', 'https://api.tookanapp.com/v2/change_job_date');
+                            request.setRequestHeader('Content-Type', 'application/json');
+
+                            request.onreadystatechange = function () {
+                                if ((this.readyState === 4) && (assignDateTimeToTask == 0)) {
+                                    console.log('Status:', this.status);
+                                    console.log('Headers:', this.getAllResponseHeaders());
+                                    console.log('Body:', this.responseText);
+
+                                    assignDateTimeToTask = 1;
+                                }
+                            };
+
+                            var body = {
+                                'api_key': '51676580f24b091114132d38111925401ee4c2f328d978375e1f03',
+                                "job_ids": [checkTN],
+                                'layout_type': 0,
+                                'start_time': document.getElementById("dateTime").value,
+                                'end_time': document.getElementById("dateTimeClose").value
+                            };
+                            request.send(JSON.stringify(body));
+
+                            assignTaskToAgent = 1;
+                        }
+                    }
+                };
+
+                var body = {
+                    'api_key': '51676580f24b091114132d38111925401ee4c2f328d978375e1f03',
+                    'job_id': checkTN,
+                    'fleet_id': document.getElementById("agent").value,
+                    'job_status': '0'
+                };
+                request.send(JSON.stringify(body));
+            }
+        }
+        document.getElementById("pod").submit();
+    });
 });
