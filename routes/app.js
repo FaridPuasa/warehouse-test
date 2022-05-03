@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment')
 const bcrypt = require('bcrypt')
+const alert = require('alert');
 //const fastCsv = require('fast-csv')
 
 //Models listing
 //const statusDB = require('../models/inventory')
-const inventories = require('../models/invetories');
+const inventories = require('../models/inventories');
 const userDB = require('../models/user')
 const podDB = require('../models/pod');
 const dispatchDB = require('../models/dispatch');
@@ -14,7 +15,7 @@ const exportDB = require('../models/exportReturn');
 const grpMalaysiaDB = require('../models/grpMalaysia');
 
 //middlewares
-const { findOne, findOneAndUpdate } = require('../models/invetories');
+const { findOne, findOneAndUpdate } = require('../models/inventories');
 const { render } = require('ejs');
 const { request } = require('express');
 const res = require('express/lib/response');
@@ -22,6 +23,34 @@ const res = require('express/lib/response');
 let currentUser = {}
 
 //exporting data from mongo to csv
+
+router.get("/cs", (req,res)=>{
+    res.render('testSearch')
+})
+
+router.post("/details", (req,res)=>{
+    searchEngine(req,res)
+})
+
+function searchEngine(req,res){
+    let currentDetails = {}
+    inventories.find({trackingNumber:req.body.trackingSearch}, function(err,details){
+        currentDetails = details
+        if(details){
+            console.log(details[0].trackingNumber)
+            res.render('testdetails',{
+                trackingNumber:details[0].trackingNumber,
+                name:details[0].name,
+                contact:details[0].contact,
+                address:details[0].address,
+                product:details[0].product,
+                value:details[0].value,
+                status:details[0].status,
+                history:details[0].history,
+            })
+        }else{console.log("no tracking exist")}
+    })
+}
 
 function csvExport(req,res) {
     let dateStart = req.body.dateStart
@@ -143,13 +172,13 @@ function userEditable(req,res){
         if (err){
             console.log(err)
             res.render('error', {
-                error_code: '11000',
+                code: '11000',
                 head:'Invalid Entry',
                 message:'User IC-Number / Social Security Number already in Database'
             })
             if (err.name === 'MongoError' && err.code === 11000){
                 res.render('error', {
-                    error_code: '11000',
+                    code: '11000',
                     head:'Invalid Entry',
                     message:'User IC-Number / Social Security Number already in Database'
                 })
@@ -170,7 +199,7 @@ function userAttendance(req,res){
         if (err){
             console.log(err)
             res.render('error', {
-                error_code: '11000',
+                error_code: 'Error Code: 10',
                 head:'Invalid Entry',
                 message:'User IC-Number / Social Security Number already in Database'
             })
@@ -206,13 +235,12 @@ function user(req,res) {
     })
     user.save((err) => {
         if (err){
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    error_code: '11000',
-                    head:'Invalid Entry',
-                    message:'User IC-Number / Social Security Number already in Database'
-                })
-            }
+            res.render('error', {
+                code: 'Mongo = 11000',
+                head:'Invalid Entry',
+                message:'User IC-Number / Social Security Number already in Database',
+                solution: 'Retry registration. If persist please contact RDI ext 877'
+            })
         }else {
             res.render ('success', {
                 head: "Account Created",
@@ -339,7 +367,7 @@ function login(req,res){
                     }
                     else if (position == "FIN"){res.render('')}
                     else {res.render('error',{
-                        error_code: 'Error Code: 01', //access control error
+                        code: 'Error Code: 1', //access control error
                         head:'Invalid Access',
                         message:'Failed to detect access for user',
                         solution: "Please inform RDI, EXT 877"
@@ -348,10 +376,10 @@ function login(req,res){
                 }
                 else{
                     res.render('error', {
-                        error_code: 'Error Code: 02',
-                        head:'Invalid Entry',
-                        message:'test',
-                        solution: "none"
+                        code: 'Error Code: 401',
+                        head:'Unauthorised Access.',
+                        message:'Invalid access.',
+                        solution: "Retry to login. If persist please contact RDI ext 877."
                     })
                 }
             }
@@ -373,7 +401,7 @@ function firstTimeLogin(req,res){
                 console.log(err)
                 res.render('error',{
                     head: "Error",
-                    error_code: "10",
+                    code: "10",
                     message: "Failed to Update Password",
                     solution: "Please contact RDI Department ext 877"
                 })
@@ -447,7 +475,7 @@ router.get('/itemout',(req,res) => {
     })
 })
 
-router.post('/confirm',(req,res) => {
+router.post('/itemout',(req,res) => {
     itemOut(req,res)
 })
 
@@ -466,6 +494,14 @@ router.post('/confirmpod', (req,res) => {
 router.get('/podList', (req,res) => {
     podDB.find({}, (err,pod) => {
         res.render('podList', {
+            podList: pod,
+        })
+    })
+})
+
+router.get('/personalPod', (req,res) => {
+    podDB.find({}, (err,pod) => {
+        res.render('podListPvt', {
             podList: pod,
         })
     })
@@ -587,13 +623,12 @@ function exportReturn(req,res){
     exportReturn.parcelContent.push(item)
     exportReturn.save((err) => {
         if (err){
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    error_code: '11000',
-                    head:'Invalid Entry',
-                    message:'Tracking Number already exist within the database'
-                })
-            }
+            res.render('error', {
+                code: 'Mongo = 11000',
+                head:'Invalid Entry',
+                message:'Tracking Number already exist within the database', 
+                solution: 'Retry entering database. If persist please contact RDI ext 877'
+            })
         }else {
             res.render ('success', {
                 head: "Task Assigned",
@@ -608,7 +643,7 @@ function dispatcherPod(req,res){
     let body = req.body
     let date = moment().format("L")
     let tracker = body.trackingNum
-    let update = {status: "COMPLETED" + " | " + date, $push: {history: {statusDetail: "COMPLETED", dateUpdated: date,}}}
+    let update = {status: "COMPLETED" + " at " + date, $push: {history: {statusDetail: "COMPLETED", dateUpdated: date,}}}
     let option = {upsert: true, new: true}
     for (i = 0; i< tracker.length; i++){
         let filter = {trackingNumber: tracker[i], task: true}
@@ -644,17 +679,16 @@ function dispatcherRecord(req,res){
     })
     dispatcher.save((err) => {
         if (err){
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    error_code: '11000',
-                    head:'Invalid Entry',
-                    message:'Tracking Number already exist within the database'
-                })
-            }
+            res.render('error', {
+                code: 'Mongo = 11000',
+                head:'Invalid Entry',
+                message:'Tracking Number already exist within the database', 
+                solution: 'Retry submitting the form again. If persist please contact RDI ext 877'
+            })
         }else {
             res.render ('success', {
                 head: "Task Assigned",
-                message: "Task successfully assigned to <%=  body.assignTo %>.",
+                message: `Task successfully assigned to ${s}.`,
             })
         }
     })
@@ -662,11 +696,19 @@ function dispatcherRecord(req,res){
 
 //reEntry parcels >>>>>>>>> ADD USER <<<<<<<<<<<<
 function reEntry(req,res){
-    //let date = moment().format();
+    let date = moment().format();
     let filter = {trackingNumber: req.body.trackingNumber}
-    let history = {history: {statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]"}}
+    let history = {
+        history: {
+            statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]",
+            dateUpdated: date, 
+            updateBy: req.body.userName, 
+            updateById: req.body.userID, 
+            updateByPos: req.body.pos
+        }
+    }
     let update = {
-        status: "IN WAREHOUSE" + "[" + req.body.reason + "]",
+        status: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " at " + date,
         reason: req.body.reason,
         remark: req.body.remark,
         reEntry: "TRUE",
@@ -718,7 +760,7 @@ function itemOut(req,res){
     let date = moment().format("L")
     let tracker = {trackingNumber: req.body.trackingNum}
     let update = {
-        status: "OUT FOR DELIVERY " + "[" + req.body.agentName + "]" + "|" + date, 
+        status: "OUT FOR DELIVERY " + "[" + req.body.agentName + "]" + " at " + date, 
         $push:{
             history: {
                 statusDetail: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]" , 
@@ -730,12 +772,35 @@ function itemOut(req,res){
         }
     }
     let option = {upsert: true, new: true}
+    inventories.findOne(tracker, (err,result) => {
+        let count = result.count
+        //console.log(count)
+        if (result) {
+            if(count == 0 || count <= 3) {
+                let newcount = count + 1
+                result.count = newcount
+                result.save()
+                console.log(newcount)
+                //console.log(result.count)
+            }
+            else if (count >= 4){
+                /*res.render('error', {
+                    code: "9",
+                    head: "Max delivery attempt reached",
+                    message: "Parcel reach maximum number of attempts",
+                    solution: "Please inform warehouse supervisor to schedule for return or inform customer to self collect the parcel.",
+                })*/
+                alert('Maximum delivery attempt reached. Please inform Warehouse supervisor or customer for self collection.')
+                console.log("new" + count)
+            }
+        }
+    })
     inventories.findOneAndUpdate(tracker,update,option,(err,docs) => {
         if(err){
             console.log(err)
             res.render('error',{
                 head: "Error",
-                code: "10-B",
+                code: "10",
                 message: "Failed to update database",
                 solution: "Please contact RDI Department ext 877"
             })
@@ -743,30 +808,12 @@ function itemOut(req,res){
         else {
             console.log('update success')
            //let date = req.body.dateSchedule
-            res.render('itemout')
+            res.render('itemout',{
+                name: currentUser.name,
+                icNumber: currentUser.icNumber,
+                position: currentUser.position,
+            })
         } 
-    })
-    inventories.findOne(tracker, (err,result) => {
-        let count = result.count
-        console.log(count)
-        
-        if (result) {
-            if(count = 0 || count <= 3) {
-                let newcount = count + 1
-                result.count = newcount
-                result.save()
-                console.log(newcount)
-                console.log(result.count)
-            }
-            else if (count >= 4){
-                res.render('limit', {
-                    head: "Max limit reached",
-                    message: "Parcel reach maximum number of attempts",
-                    solution: "Please inform warehouse supervisor to schedule for return.",
-                })
-            }
-        }
-        else console.log(err)
     })
 }
 
@@ -800,13 +847,13 @@ function editableList(req,res){
 function pod(req,res){
     let body = req.body
     let date = moment().format("L")
-    let ref = "GR/POD/" + body.agentName + "[" + body.areaCode + "]"
+    let ref = "GR/POD/" + body.agentName + "[" + body.areaCode + "]" + "/" + date
     let tracker = body.trackingNumC
     console.log(tracker)
     for (let i = 0; i < tracker.length; i++){
         let filter = {trackingNumber: tracker[i]}
         let update = {
-            status: "SCHEDULED FOR DELIVERY" + "|" + body.dateAssign, 
+            status: "SCHEDULED FOR DELIVERY" + " at " + body.dateAssign, 
             $push: {
                 history: {
                     statusDetail: "SCHEDULED FOR DELIVERY", 
@@ -824,15 +871,15 @@ function pod(req,res){
                 console.log(err)
                 res.render('error',{
                     head: "Error",
-                    code: "10-A",
+                    code: "10",
                     message: "Failed to update database",
                     solution: "Please contact RDI Department ext 877"
                 })
             } 
             else {
+                alert('Tracking number successfully updated.')
                 console.log('update success')
                //let date = req.body.dateSchedule
-                
             }
         })
     }
@@ -875,8 +922,10 @@ function pod(req,res){
 
 //Item into warehouse
 function itemin(req,res){
+    let date = moment().format('L')
     let parcelStatus = {
-        statusDetail: "IN WAREHOUSE"+"["+req.body.area+"]"+ "|" + req.body.dateEntry, 
+        statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]", 
+        dateUpdated: date,
         updateBy: req.body.userName, 
         updateById: req.body.userID, 
         updateByPos: req.body.pos
@@ -894,7 +943,7 @@ function itemin(req,res){
        task: req.body.taskCB,
        product: req.body.formMETHOD,
        value: req.body.value,
-       status: "IN WAREHOUSE" + "[" + req.body.area + "]",
+       status: "IN WAREHOUSE" + "[" + req.body.area + "]" + " at " + req.body.dateEntry,
        bin: bin,
        reEntry: "FALSE",
        reason: req.body.reason,
@@ -907,17 +956,16 @@ function itemin(req,res){
        userPos: req.body.userPos,
        count: 0,
     })
-    console.log(inventories)
+    console.log(inventory)
     inventory.history.push(parcelStatus)
     inventory.save((err) => {
         if (err) {
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    error_code: '11000',
-                    head:'Invalid Entry',
-                    message:'Tracking Number already exist within the database'
-                })
-            }
+            res.render('error', {
+                code: 'Mongo = 11000',
+                head:'Invalid Entry',
+                message:'Tracking Number already exist within the database',
+                solution: 'Please recheck on item list. If persist please contact RDI ext 877'
+            })
         }else {
             res.redirect ('itemin')
         }
@@ -927,7 +975,7 @@ function itemin(req,res){
 function selfCollect(req,res){
     let date = moment().format("L");
     let filter = {trackingNumber: req.body.trackingNum}
-    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + "|" + date, 
+    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
         $push:{
             history: {
                 statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
@@ -989,7 +1037,7 @@ router.get('pharmacySelf',(req,res) => {
 
 //Pharmacy In
 function pharmacyIn (req,res){
-    let parcelStatus = {statusDetail: "IN MED ROOM"+"["+req.body.area+"]"+ "|" + req.body.dateEntry}
+    let parcelStatus = {statusDetail: "IN MED ROOM"+"["+req.body.area+"]"+ "at " + req.body.dateEntry}
     let bin = req.body.area +"/"+req.body.dateEntry
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,
@@ -1014,7 +1062,7 @@ function pharmacyIn (req,res){
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000){
                 res.render('error', {
-                    error_code: '11000',
+                    code: 'Mongo = 11000',
                     head:'Invalid Entry',
                     message:'Tracking Number already exist within the database'
                 })
@@ -1029,8 +1077,8 @@ function pharmacyIn (req,res){
 function pharmaSelfCollect(req,res){
     let date = moment().format();
     let filter = {trackingNumber: req.body.trackingNumber}
-    let update = {status: "SELF COLLECTED" + " | " + date}
-    let history = {history: {statusDetail: "SELF COLLECTED" + " | " + date}}
+    let update = {status: "SELF COLLECTED" + " at " + date}
+    let history = {history: {statusDetail: "SELF COLLECTED" + " at " + date}}
     let option = {upsert: true, new: true}
     console.log(req.body.trackingNumber)
     inventories.findOneAndUpdate(filter,{$push: history}, option)
@@ -1072,7 +1120,7 @@ router.get('/grpmy',(req,res) => {
 //After DHL Pickup
 function iteminMy(req,res){
     let date = moment().format()
-    let parcelStatus = "IN WAREHOUSE[MY]" + " | " + date
+    let parcelStatus = "IN WAREHOUSE[MY]" + " at " + date
     let body = req.body
     let myInventory = new myInventoryDB ({
         trackingNumber: body.trackingNumber,

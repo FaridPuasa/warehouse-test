@@ -1,0 +1,17 @@
+<div>
+    <p><%= trackingNumber %></p>
+    <p><%= name %></p>
+    <p><%= contact %></p>
+    <p><%= address %></p>
+    <p><%= product %></p>
+    <p><%= value %></p>
+    <p>Current Status: <%= status %></p>
+    <p>Status History:</p>
+    <% for(var i = 0 ; i < history.length; i++) {%>
+        <ul>
+          <li>Status: <%= history[i].statusDetail %></li>
+          <li>Date: <%= history[i].dateUpdated %></li>
+          <li id="pos">By: <%= history[i].updatedby %> | <%= history[i].updateByPos %></li>
+        </ul>
+    <% } %>
+</div>

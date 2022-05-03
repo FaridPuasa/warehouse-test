@@ -35,9 +35,7 @@ const inventorySchema  = new mongoose.Schema({
     userName: reqString,
     userID: reqString,
     userPos: reqString,
-    statusHistory: {type: [String]},
-    dateUpdate: {type: [entryDate]},
-    history: [{statusDetail: reqString, dateUpdated: entryDate}],
+    history: [{statusDetail: reqString, dateUpdated: entryDate, updateBy: reqString, updateById: reqString, updateByPos: reqString}],
 }, {timestamps: true})
 
 //inventorySchema.index({createdAt: 1},{expireAfterSeconds: 60});//180 days
