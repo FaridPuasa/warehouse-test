@@ -38,7 +38,7 @@ const inventorySchema  = new mongoose.Schema({
     history: [{statusDetail: reqString, dateUpdated: entryDate, updateBy: reqString, updateById: reqString, updateByPos: reqString}],
 }, {timestamps: true})
 
-inventorySchema.index({createdAt: 1},{expireAfterSeconds: 31536000});//180 days
+inventorySchema.index({createdAt: 1},{expireAfterSeconds: 31536000});//1 year
 module.exports = mongoose.model('inventories', inventorySchema)
 
 
