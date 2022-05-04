@@ -15,7 +15,7 @@ const exportDB = require('../models/exportReturn');
 const grpMalaysiaDB = require('../models/grpMalaysia');
 
 //middlewares
-const { findOne, findOneAndUpdate } = require('../models/inventories');
+const { findOne, findOneAndUpdate, listenerCount } = require('../models/inventories');
 const { render } = require('ejs');
 const { request } = require('express');
 const res = require('express/lib/response');
@@ -33,22 +33,35 @@ router.post("/details", (req,res)=>{
 })
 
 function searchEngine(req,res){
-    let currentDetails = {}
-    inventories.find({trackingNumber:req.body.trackingSearch}, function(err,details){
+    //let currentDetails = {}
+    let startDate = moment(req.body.startDate).utcOffset('+0800').format("YYYY-MM-DDTHH:mm:ss.SSSZ"); //req.params.startTime = 2016-09-25 00:00:00
+    let endDate   = moment(req.body.endDate).utcOffset('+0800').format("YYYY-MM-DDTHH:mm:ss.SSSZ"); //req.params.endTime = 2016-09-25 01:00:00
+
+    console.log(startDate)
+    console.log(endDate)
+    //if query tracking number. use find({trackingNuember: value})
+    inventories.find({
+        entryDate: {
+            $gt:  startDate,
+            $lt:  endDate
+        }
+    }, function(err,details){
         currentDetails = details
-        if(details){
-            console.log(details[0].trackingNumber)
-            res.render('testdetails',{
-                trackingNumber:details[0].trackingNumber,
-                name:details[0].name,
-                contact:details[0].contact,
-                address:details[0].address,
-                product:details[0].product,
-                value:details[0].value,
-                status:details[0].status,
-                history:details[0].history,
-            })
-        }else{console.log("no tracking exist")}
+        for(i = 0; i < details.length; i++){
+            if(details){
+                console.log(details)
+                res.render('testdetails',{
+                    trackingNumber:details[i].trackingNumber,
+                    name:details[i].name,
+                    contact:details[i].contact,
+                    address:details[i].address,
+                    product:details[i].product,
+                    value:details[i].value,
+                    status:details[i].status,
+                    history:details[i].history,
+                })
+            }else{console.log("no tracking exist")}
+        }
     })
 }
 
