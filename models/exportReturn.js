@@ -15,6 +15,7 @@ const exportsSchema  = new mongoose.Schema({
     name: reqString,
     address: reqString,
     contact: reqString,
+    uid:{type:[String]}
 })
 
 module.exports = mongoose.model('exportss', exportsSchema)
