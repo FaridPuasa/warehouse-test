@@ -5,9 +5,7 @@ const reqString = {
     require: true,
 }
 
-const item = new mongoose.Schema({
-    uid: reqString
-})
+
 
 const exportsSchema  = new mongoose.Schema({
     trackingNumber: reqString,
@@ -15,7 +13,8 @@ const exportsSchema  = new mongoose.Schema({
     name: reqString,
     address: reqString,
     contact: reqString,
-    uid:{type:[String]}
+    dateSchedule: reqString,
+    uid:{type:[String]},
 })
 
 module.exports = mongoose.model('exportss', exportsSchema)

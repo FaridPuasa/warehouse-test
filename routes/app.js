@@ -593,7 +593,7 @@ router.post('/confirmed', (req,res) => {
 
 //This is used for return details >>>>> ADD USER <<<<<<
 function exportReturn(req,res){
-    //let date = moment().format()
+    let date = moment().format('L')
     let filter = {trackingNumber: req.body.trackingNumber}
     let update = {status: "RETURN TO MY"}
     let option = {upsert: true, new: true}
