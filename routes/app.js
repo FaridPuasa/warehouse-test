@@ -573,6 +573,22 @@ router.get('/return', (req,res) => {
    
 })
 
+router.get('/return', (req,res) => {
+    let zaloraList = []
+    inventories.find({} , (err,inventory) => {
+        inventory.forEach(function(inventory){
+            zaloraList.push(inventory)
+        })
+        res.render('return',{
+            zalora: zaloraList,
+            name: currentUser.name,
+            icNumber: currentUser.icNumber,
+            position: currentUser.position,
+        })
+    })
+   
+})
+
 router.post('/success', (req,res) => {
     exportReturn(req,res)
 })
@@ -593,7 +609,7 @@ router.post('/confirmed', (req,res) => {
 
 //This is used for return details >>>>> ADD USER <<<<<<
 function exportReturn(req,res){
-    let date = moment().format('L')
+    let date = moment().format()
     let filter = {trackingNumber: req.body.trackingNumber}
     let update = {status: "RETURN TO MY"}
     let option = {upsert: true, new: true}
@@ -639,9 +655,11 @@ function exportReturn(req,res){
     let exports = req.body
     let exportReturn = new exportDB({
         trackingNumber: exports.trackingNumber,
+        newTrackingNumber: exports.newTrackingNumber,
         name: exports.name,
         address: exports.address,
         contact: exports.contact,
+        dateSchedule: exports.dateSchedule,
     })
     exportReturn.parcelContent.push(item)
     exportReturn.save((err) => {
@@ -654,8 +672,8 @@ function exportReturn(req,res){
             })
         }else {
             res.render ('success', {
-                head: "Task Assigned",
-                message: "Task successfully assigned to <%=  body.assignTo %>.",
+                head: "Successfully save",
+                message: " ",
             })
         }
     })
