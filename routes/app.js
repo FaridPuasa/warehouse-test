@@ -127,6 +127,14 @@ router.post("/testcomplete", (req,res) => {
 
 /*************************** USER *********************************/
 
+router.get('/user', (req,res) => {
+    userDB.find({}, function(err,users){
+        res.render('userlist', {
+            userList: users,
+        })
+    })
+})
+
 router.get('/register', (req,res) => {
     res.render('register')
 })
@@ -142,6 +150,7 @@ router.get('/login', (req,res) => {
 router.post('/dashboard', (req,res) => {
     login(req,res)
 })
+
 
 router.get('/changpassword', (req,res) => {
     res.render('changepassword')
@@ -281,6 +290,7 @@ function login(req,res){
                                 res.render('dashboardad', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
+                                    id: user._id,
                                     name: user.name,
                                     icNumber: user.icNumber,
                                     position: user.position,
