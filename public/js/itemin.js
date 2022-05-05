@@ -43,6 +43,7 @@ function checkTrackingNum(field, autoMove) {
                     let address = document.getElementById("address").value.toUpperCase();
 
                     var kampong = "";
+                    var area = "";
 
                     if (address.includes("MANGGIS") == true) { area = "B1", kampong = "MANGGIS" }
                     else if (address.includes("DELIMA") == true) { area = "B1", kampong = "DELIMA" }
@@ -485,7 +486,7 @@ function checkTrackingNum(field, autoMove) {
                     document.getElementById("itemIn").style.display = 'block';
                     document.getElementById("trackingnumberarea").style.display = 'block';
 
-                    setTimeout(autoSubmit, 2000);
+                    //setTimeout(autoSubmit, 2000);
 
                     document.getElementById("trackingNum").focus();
                 }
