@@ -167,9 +167,9 @@ else if (address.includes("BUKIT BERUANG") == true) {area = "TUTONG", kampong = 
 else if (address.includes("BERUANG") == true) {area = "TUTONG", kampong = "BUKIT BERUANG"}
 else if (address.includes("TUTONG") == true) {area = "TUTONG", kampong = "TUTONG"}
 //KB
-else if (address.includes("AGIS") == true) {area = "KB / SERIA", kampong = "AGIS"}
+else if (address.includes("AGIS") == true) {area = "LUMUT", kampong = "AGIS"}
 else if (address.includes("ANDALAU") == true) {area = "KB / SERIA", kampong = "ANDALAU"}
-else if (address.includes("ANDUKI") == true) {area = "KB / SERIA", kampong = "ANDUKI"}
+else if (address.includes("ANDUKI") == true) {area = "LUMUT", kampong = "ANDUKI"}
 else if (address.includes("APAK") == true) {area = "KB / SERIA", kampong = "APAK"}
 else if (address.includes("BADAS") == true) {area = "KB / SERIA", kampong = "BADAS"}
 else if (address.includes("BANG") == true) {area = "KB / SERIA", kampong = "BANG"}
@@ -207,7 +207,7 @@ else if (address.includes("LAONG") == true) {area = "KB / SERIA", kampong = "LAO
 else if (address.includes("LIANG") == true) {area = "KB / SERIA", kampong = "SUNGAI LIANG"}
 else if (address.includes("SUNGAI LIANG") == true) {area = "KB / SERIA", kampong = "SUNGAI LIANG"}
 else if (address.includes("SG LIANG") == true) {area = "KB / SERIA", kampong = "SUNGAI LIANG"}
-else if (address.includes("LUMUT") == true) {area = "KB / SERIA", kampong = "LUMUT"}
+else if (address.includes("LUMUT") == true) {area = "LUMUT", kampong = "LUMUT"}
 else if (address.includes("LORONG") == true) {area = "KB / SERIA", kampong = "LORONG"}
 else if (address.includes("LORONG TENGAH") == true) {area = "KB / SERIA", kampong = "LORONG TENGAH"}
 else if (address.includes("LORONG TIGA SELATAN") == true) {area = "KB / SERIA", kampong = "LORONG TIGA SELATAN"}

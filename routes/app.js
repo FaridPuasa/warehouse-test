@@ -798,6 +798,10 @@ function reEntry(req,res){
 
 //Item out into staging area
 function itemOut(req,res){
+    let status = {status: req.body.status}
+    if (status.includes('WAREHOUSE') == true){
+        
+    }
     let date = moment().format("L")
     let tracker = {trackingNumber: req.body.trackingNum}
     let update = {
