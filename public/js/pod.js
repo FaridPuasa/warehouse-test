@@ -626,7 +626,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             var assignTaskToAgent = 0;
             var assignDateTimeToTask = 0;
 
-            var checkTN = document.getElementById("trackingNumC" + (i + 1)).value
+            var checkTN = document.getElementById("trackingNumC" + (i + 1)).value;
 
             var request = new XMLHttpRequest();
 
