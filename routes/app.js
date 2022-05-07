@@ -321,7 +321,24 @@ function login(req,res){
                         })
                         
                     }
-                    else if (position == "CS"){res.render('')}
+                    else if (position == "CS"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                            podDB.find({}, (err,pod) =>{
+                                dispatchDB.find({}, (err,dispatch) => {
+                                    res.render('dashboardWs', {
+                                        itemList: zaloraInventory,
+                                        dispatch: dispatch,
+                                        podList: pod,
+                                        name: user.name,
+                                        icNumber: user.icNumber,
+                                        position: user.position,
+                                        contact: user.contact,
+                                        office: user.office
+                                    })
+                                })
+                            })
+                        })
+                    }
                     else if (position == "WS"){
                         inventories.find({}, (err,zaloraInventory) => {
                             dispatchDB.find({}, (err,dispatch) => {
@@ -442,7 +459,7 @@ router.get('/itemList', (req,res) => {
 
 router.get('/itemListHistory', (req,res) => {
     inventories.find({}, function(err,inventory){
-        res.render('test', {
+        res.render('itemListHistory', {
             itemList: inventory,
             moment: moment
         })
@@ -841,7 +858,7 @@ function itemOut(req,res){
     inventories.findOne(tracker, (err,result) => {
         let count = result.count
         //console.log(count)
-        if (result) {
+        if (result){
             if(count == 0 || count <= 3) {
                 let newcount = count + 1
                 result.count = newcount
@@ -996,7 +1013,6 @@ function itemin(req,res){
         updateById: req.body.userID, 
         updateByPos: req.body.pos
     }
-
     let bin = req.body.area +"/"+req.body.dateEntry
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,

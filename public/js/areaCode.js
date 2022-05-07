@@ -249,21 +249,21 @@ else if (address.includes("SIMPANG") == true) {area = "KB / SERIA", kampong = "S
 else if (address.includes("SIMPANG TIGA") == true) {area = "KB / SERIA", kampong = "SIMPANG TIGA"}
 else if (address.includes("SINGAP") == true) {area = "KB / SERIA", kampong = "SINGAP"}
 else if (address.includes("SUKANG") == true) {area = "KB / SERIA", kampong = "SUKANG"}
-else if (address.includes("BAKONG") == true) {area = "KB / SERIA", kampong = "BAKONG"}
+else if (address.includes("BAKONG") == true) {area = "LUMUT", kampong = "BAKONG"}
 else if (address.includes("DAMIT") == true) {area = "KB / SERIA", kampong = "DAMIT"}
 else if (address.includes("BERA") == true) {area = "KB / SERIA", kampong = "BERA"}
 else if (address.includes("DUHON") == true) {area = "KB / SERIA", kampong = "DUHON"}
 else if (address.includes("GANA") == true) {area = "KB / SERIA", kampong = "GANA"}
 else if (address.includes("HILIR") == true) {area = "KB / SERIA", kampong = "HILIR"}
 else if (address.includes("KANG") == true) {area = "KB / SERIA", kampong = "KANG"}
-else if (address.includes("KURU") == true) {area = "KB / SERIA", kampong = "KURU"}
-else if (address.includes("LALIT") == true) {area = "KB / SERIA", kampong = "LALIT"}
+else if (address.includes("KURU") == true) {area = "LUMUT", kampong = "KURU"}
+else if (address.includes("LALIT") == true) {area = "LUMUT", kampong = "LALIT"}
 else if (address.includes("LUTONG") == true) {area = "KB / SERIA", kampong = "LUTONG"}
 else if (address.includes("MAU") == true) {area = "KB / SERIA", kampong = "MAU"}
 else if (address.includes("MELILIT") == true) {area = "KB / SERIA", kampong = "MELILIT"}
 else if (address.includes("PETAI") == true) {area = "KB / SERIA", kampong = "PETAI"}
-else if (address.includes("TALI") == true) {area = "KB / SERIA", kampong = "TALI"}
-else if (address.includes("TARING") == true) {area = "KB / SERIA", kampong = "TARING"}
+else if (address.includes("TALI") == true) {area = "LUMUT", kampong = "TALI"}
+else if (address.includes("TARING") == true) {area = "LUMUT", kampong = "TARING"}
 else if (address.includes("TERABAN") == true) {area = "KB / SERIA", kampong = "TERABAN"}
 else if (address.includes("UBAR") == true) {area = "KB / SERIA", kampong = "UBAR"}
 else if (address.includes("TANAJOR") == true) {area = "KB / SERIA", kampong = "TANAJOR"}
