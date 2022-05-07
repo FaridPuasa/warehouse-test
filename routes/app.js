@@ -594,7 +594,37 @@ router.get('/selfcollect', (req,res) => {
 })
 
 router.post('/confirmed', (req,res) => {
-    selfCollect(req,res)
+    let date = moment().format("L");
+    let filter = {trackingNumber: req.body.trackingNum}
+    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
+        $push:{
+            history: {
+                statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
+    let option = {upsert: true, new: true}
+    console.log(req.body.trackingNum)
+    console.log(filter)
+    inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
+        if(err){
+            console.log(err)
+            res.render('error',{
+                head: "Error",
+                code: "10",
+                message: "Failed to update database",
+                solution: "Please contact RDI Department ext 877"
+            })
+        } 
+        else{
+            console.log(docs)
+            res.render('success')
+        } 
+    })
 })
 
 
@@ -1009,37 +1039,7 @@ function itemin(req,res){
 }
 
 function selfCollect(req,res){
-    let date = moment().format("L");
-    let filter = {trackingNumber: req.body.trackingNum}
-    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
-        $push:{
-            history: {
-                statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
-                dateUpdated: date,
-                updateBy: req.body.userName, 
-                updateById: req.body.userID, 
-                updateByPos: req.body.pos
-            }
-        }
-    }
-    let option = {upsert: true, new: true}
-    console.log(req.body.trackingNum)
-    console.log(filter)
-    inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
-        if(err){
-            console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
-        } 
-        else{
-            console.log(docs)
-            res.render('success')
-        } 
-    })
+    
 }
 /*************************** ZALORA *********************************/
 
