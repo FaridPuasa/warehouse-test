@@ -147,6 +147,7 @@
           <table id="myTable" class="table table-striped table-hover table-bordered table-responsive">
             <thead>
               <tr>
+                <th scope="col"><input type="checkbox" name="selectedValue"></th>
                 <th scope="col">Tracking Number</th>
                 <th scope="col">P/N</th>
                 <th scope="col">Area</th>
@@ -161,11 +162,12 @@
               </tr>
             </thead>
 
-
+            <form method="post" action=""></form>
             <%itemList.forEach(inventory=> {%>
             <tbody>
               <tr class="content">
-                <th scope="row">
+                <th scope="row"><input type="checkbox" name="selectedValue"></th>
+                <th scope="row"> 
                     <div class="popup" onclick="displayPlan('<%= inventory.trackingNumber %>')"><%= inventory.trackingNumber %>
                         <span class="popuptext" id="<%= inventory.trackingNumber %>"><%= inventory.trackingNumber %></span>
                     </div>
@@ -199,7 +201,9 @@
               </tr>
             </tbody>
             <%})%>
+          </form>
           </table>
+          
         </div>
       </div>
     </div>

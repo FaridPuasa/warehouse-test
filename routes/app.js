@@ -321,7 +321,24 @@ function login(req,res){
                         })
                         
                     }
-                    else if (position == "CS"){res.render('')}
+                    else if (position == "CS"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                            podDB.find({}, (err,pod) =>{
+                                dispatchDB.find({}, (err,dispatch) => {
+                                    res.render('dashboardWs', {
+                                        itemList: zaloraInventory,
+                                        dispatch: dispatch,
+                                        podList: pod,
+                                        name: user.name,
+                                        icNumber: user.icNumber,
+                                        position: user.position,
+                                        contact: user.contact,
+                                        office: user.office
+                                    })
+                                })
+                            })
+                        })
+                    }
                     else if (position == "WS"){
                         inventories.find({}, (err,zaloraInventory) => {
                             dispatchDB.find({}, (err,dispatch) => {
@@ -442,7 +459,7 @@ router.get('/itemList', (req,res) => {
 
 router.get('/itemListHistory', (req,res) => {
     inventories.find({}, function(err,inventory){
-        res.render('test', {
+        res.render('itemListHistory', {
             itemList: inventory,
             moment: moment
         })
@@ -594,7 +611,37 @@ router.get('/selfcollect', (req,res) => {
 })
 
 router.post('/confirmed', (req,res) => {
-    selfCollect(req,res)
+    let date = moment().format("L");
+    let filter = {trackingNumber: req.body.trackingNum}
+    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
+        $push:{
+            history: {
+                statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
+    let option = {upsert: true, new: true}
+    console.log(req.body.trackingNum)
+    console.log(filter)
+    inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
+        if(err){
+            console.log(err)
+            res.render('error',{
+                head: "Error",
+                code: "10",
+                message: "Failed to update database",
+                solution: "Please contact RDI Department ext 877"
+            })
+        } 
+        else{
+            console.log(docs)
+            res.render('success')
+        } 
+    })
 })
 
 
@@ -811,7 +858,7 @@ function itemOut(req,res){
     inventories.findOne(tracker, (err,result) => {
         let count = result.count
         //console.log(count)
-        if (result) {
+        if (result){
             if(count == 0 || count <= 3) {
                 let newcount = count + 1
                 result.count = newcount
@@ -966,7 +1013,6 @@ function itemin(req,res){
         updateById: req.body.userID, 
         updateByPos: req.body.pos
     }
-
     let bin = req.body.area +"/"+req.body.dateEntry
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,
@@ -1009,37 +1055,7 @@ function itemin(req,res){
 }
 
 function selfCollect(req,res){
-    let date = moment().format("L");
-    let filter = {trackingNumber: req.body.trackingNum}
-    let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
-        $push:{
-            history: {
-                statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
-                dateUpdated: date,
-                updateBy: req.body.userName, 
-                updateById: req.body.userID, 
-                updateByPos: req.body.pos
-            }
-        }
-    }
-    let option = {upsert: true, new: true}
-    console.log(req.body.trackingNum)
-    console.log(filter)
-    inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
-        if(err){
-            console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
-        } 
-        else{
-            console.log(docs)
-            res.render('success')
-        } 
-    })
+    
 }
 /*************************** ZALORA *********************************/
 
