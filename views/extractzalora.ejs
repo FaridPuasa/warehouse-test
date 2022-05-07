@@ -1,6 +1,6 @@
 
 <!DOCTYPE html><!-- This site was created in Webflow. http://www.webflow.com -->
-<!-- Last Published: Sat May 07 2022 04:20:22 GMT+0000 (Coordinated Universal Time) -->
+<!-- Last Published: Sat May 07 2022 05:35:31 GMT+0000 (Coordinated Universal Time) -->
 <html data-wf-domain="gorushwms.webflow.io" data-wf-page="6274e6c133124fa066c1d2f1" data-wf-site="61fb4a164eca130338cafeaa" data-wf-status="1">
   <head>
     <meta charset="utf-8" />
@@ -9,7 +9,7 @@
     <meta content="Extract Zalora" property="twitter:title" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="Webflow" name="generator" />
-    <link href="https://uploads-ssl.webflow.com/61fb4a164eca130338cafeaa/css/gorushwms.webflow.b62468969.css" rel="stylesheet" type="text/css" />
+    <link href="https://uploads-ssl.webflow.com/61fb4a164eca130338cafeaa/css/gorushwms.webflow.b66fa6beb.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
     <script type="text/javascript">
       WebFont.load({
@@ -44,13 +44,16 @@
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
+
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.18.7/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </head>
   <body class="body">
     <div class="section wf-section">
       <div class="w-container"><a whenClicked="history.back()" href="#" class="button-8 w-button">&lt; Go Back</a>
         <h1 id="w-node-_5c40cdcd-743f-e2a9-4ca2-eec7aae7df1c-66c1d2f1" class="heading-2">Extract</h1>
         <div class="w-layout-grid extract-zalora-grid">
-          <div id="w-node-_98941c06-b2e3-f98f-daa2-2b3ecd956930-66c1d2f1" class="w-embed"><input type="text" id="myInput" class="text-field-2 w-input" onkeyup="myFunction()" maxlength="256" name="myInput" placeholder="Search here"></div><a whenClicked="exportTableToExcel(&#x27;myTable&#x27;)" id="w-node-_1ff15c0a-e9ae-55e8-6f33-e69e95cbe075-66c1d2f1" href="#" class="button-3 w-button">Download List as Excel</a>
+          <div id="w-node-_98941c06-b2e3-f98f-daa2-2b3ecd956930-66c1d2f1" class="w-embed"><input type="text" id="myInput" class="text-field-2 w-input" onkeyup="myFunction()" maxlength="256" name="myInput" placeholder="Search here"></div><a id="tableToExcel" href="#" class="button-3 w-node-_1ff15c0a-e9ae-55e8-6f33-e69e95cbe075-66c1d2f1 w-button">Download List as Excel</a>
         </div>
         <div class="w-layout-grid grid-10"><a id="w-node-edbc0ce3-edad-3629-780e-0db1d3820401-66c1d2f1" href="#" class="w-button">Zalora</a><a id="w-node-ee94996b-89a1-acc0-7331-9d9d68337d13-66c1d2f1" href="#" class="w-button">MOH</a><a id="w-node-_8996e896-2009-15bc-dd18-e199c6f0b452-66c1d2f1" href="#" class="w-button">JPMC</a><a id="w-node-_8444249a-9dd6-92e5-d7a7-d6833cd42d72-66c1d2f1" href="#" class="w-button">PHC</a><a id="w-node-_618b0e32-fef2-7e93-4f94-cf8fc4e1bcfa-66c1d2f1" href="#" class="w-button">GRP MY</a><a id="w-node-_8e77703e-ec4a-cf4b-e889-a6be17219d51-66c1d2f1" href="#" class="w-button">GRP SG</a><a id="w-node-_7f31fc29-c111-f2a8-fcbd-ce746c7cc16f-66c1d2f1" href="#" class="w-button">GRP CN</a></div>
       </div>
@@ -170,37 +173,32 @@
     </script>
 
     <script>
-      function exportTableToExcel(myTable, filename = '') {
-        var downloadLink;
-        var dataType = 'application/vnd.ms-excel';
-        var tableSelect = document.getElementById(myTable);
-        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+      var wb = XLSX.utils.table_to_book(document.getElementById('myTable'), {
+        sheet: "Export Zalora"
+      });
 
-        // Specify file name
-        filename = filename ? filename + '.xls' : 'extract.xls';
+      var wbout = XLSX.write(wb, {
+        booktype: 'xlsx',
+        bookSST: true,
+        type: 'binary'
+      });
 
-        // Create download link element
-        downloadLink = document.createElement("a");
-
-        document.body.appendChild(downloadLink);
-
-        if (navigator.msSaveOrOpenBlob) {
-          var blob = new Blob(['\ufeff', tableHTML], {
-            type: dataType
-          });
-          navigator.msSaveOrOpenBlob(blob, filename);
-        } else {
-          // Create a link to the file
-          downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-
-          // Setting the file name
-          downloadLink.download = filename;
-
-          //triggering the function
-          downloadLink.click();
-        }
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
       }
+      $("#tableToExcel").click(function() {
+        saveAs(new Blob([s2ab(wbout)], {
+          type: "application/octet-stream"
+        }), 'exportzalora.xlsx');
+      });
     </script>
+
+
+
+
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
