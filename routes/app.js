@@ -47,22 +47,13 @@ function searchEngine(req,res){
         }
     }, function(err,details){
         currentDetails = details
-        for(i = 0; i < details.length; i++){
             if(details){
                 console.log(details)
-                res.render('testdetails',{
-                    trackingNumber:details[i].trackingNumber,
-                    name:details[i].name,
-                    contact:details[i].contact,
-                    address:details[i].address,
-                    product:details[i].product,
-                    value:details[i].value,
-                    status:details[i].status,
-                    history:details[i].history,
+                res.render('extractzalora',{
+                    itemList: details,
                 })
             }else{console.log("no tracking exist")}
-        }
-    })
+        })
 }
 
 function csvExport(req,res) {
