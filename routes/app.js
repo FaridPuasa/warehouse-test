@@ -613,6 +613,8 @@ router.get('/selfcollect', (req,res) => {
 router.post('/confirmed', (req,res) => {
     let date = moment().format("L");
     let filter = {trackingNumber: req.body.trackingNum}
+    console.log(req.body.trackingNum)
+    console.log(req.body.trackingNumber)
     let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
         $push:{
             history: {
@@ -837,9 +839,6 @@ function reEntry(req,res){
 //Item out into staging area
 function itemOut(req,res){
     let status = {status: req.body.status}
-    if (status.includes('WAREHOUSE') == true){
-        
-    }
     let date = moment().format("L")
     let tracker = {trackingNumber: req.body.trackingNum}
     let update = {
