@@ -8,6 +8,7 @@ const alert = require('alert');
 //Models listing
 //const statusDB = require('../models/inventory')
 const inventories = require('../models/inventories');
+const deliScheduleDB = require('../models/delischedule');
 const userDB = require('../models/user')
 const podDB = require('../models/pod');
 const dispatchDB = require('../models/dispatch');
@@ -25,8 +26,147 @@ let currentUser = {}
 //exporting data from mongo to csv
 
 router.get("/cs", (req,res)=>{
-    res.render('testSearch')
+    inventories.find({}, function(err,inventory){
+        res.render('newlist', {
+            itemList: inventory,
+            moment: moment
+        })
+    })
 })
+
+/*************************************************************** VERSION 2 ************************************************************************** */
+router.post("listForOut", (req,res) => {
+    addToItemOut(req,res)
+})
+
+function addToItemOut(req,res){
+    let item = req.body
+    let date = moment().format("DD/MM/YYYY")
+    let agent = item.agentName
+    let tracker = item.trackingNum
+    let filter = {trackingNumber: tracker}
+    let update = {
+        status: "SCHEDULE FOR DELIVERY by" + agent + " at " + date,
+        $push: {
+            history:{
+                statusDetail: "SCHDULE FOR DELIVERY" + "[" + req.body.agentName + "]" , 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
+    let option = {upsert: true, new: true}
+    let status = req.body.status
+    if(status.includes("WAREHOUSE") == true){
+        alert(`${tracker} this parcel has not been scan into the database.`)
+    }
+    else{
+        inventories.find(filter,update,option,(err,result) => {
+            if(err){
+                alert(`Failed to add ${tracker} to list.`)
+            }
+        })
+    }
+        
+    let deliSchedule = new deliScheduleDB({
+        trackingNumber: item.trackingNum,
+        parcelNumber: item.parcelNumber,
+        name: item.name,
+        address: item.address,
+        contact: item.contact,
+        value: item.value,
+        area: item.area,
+        areaIndicator: item.areaIndicator,
+        product: item.product,
+        note: item.note,
+        dateSchedule: date,
+    })
+    deliSchedule.save((err) => {
+        if(err){
+            alert(`
+            Error Code: 4
+            Failed to add ${tracker} to list.
+            `)
+        }
+        else{
+            alert(`${tracker} has been schedule for delivery at ${date} to ${agent}.`)
+        }
+    })
+}
+
+router.post("/schedulelist", (req,res) => {
+    findScheduleList (req,res)
+})
+
+function findScheduleList (req,res){
+    let agent = req.body.agentName
+    let date = req.body.dateSchedule
+    deliScheduleDB.find({}, (err,list) => {
+        if (agent == list.agentName && date == list.dateSchedule){
+            res.render('schlist',{
+                scheduleList: list,
+                name: currentUser.name,
+                icNumber: currentUser.icNumber,
+                position: currentUser.position,
+            })
+        }
+        else{
+            alert(`No List available`)
+        }
+    })
+}
+
+router.get('/itemoutsss', (req,res) => {
+    getItemOut(req,res)
+})
+
+function getItemOut(req,res){
+    inventories.find({},(err,outlist) => {
+        res.render('itemout', {
+            itemList: outlist
+        })
+    })
+}
+
+function removedFromSchedule(req,res){
+    let item = req.body
+    let tracker = item.trackingNum
+    let filter = {trackingNumber: item.trackingNum}
+    let update = {
+        status: "IN WAREHOUSE" + "[" +req.body.area + "]",
+        $push: {
+            history:{
+                statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]" , 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
+    inventories.find(filter,update,option, (err,res) => {
+        if(err){
+            alert(`Failed to update ${tracker}`)
+        }
+        else{
+            deliScheduleDB.remove(filter, (err)=> {
+                if(err){
+                    alert(`Failed to removed ${tracker}`)
+                }
+                else{
+                    res.render('scheduleList', {
+
+                    })
+                }
+            })
+        }
+    })
+}
+
+
+/******************************************************************************************************************************************************************************/
 
 router.post("/details", (req,res)=>{
     searchEngine(req,res)
@@ -103,15 +243,16 @@ router.get('/acess/zalora', (req,res)=> {
     })
 })
 
-/* test for checkbox
+//test for checkbox
 router.get("/testing", (req,res) => {
     res.render("tester")
 })
 
 router.post("/testcomplete", (req,res) => {
-    let testCB = req.body.testCB
+    let testCB = req.body.selected
     if (testCB == "true"){
         testCB = true
+        console.log(req.body.trackingNum)
         console.log("the box is check and true")
         res.render("testcomplete", {
             testCB: testCB,
@@ -127,7 +268,7 @@ router.post("/testcomplete", (req,res) => {
     }
     console.log(req.body.testCB)
 })
-*/
+
 
 /*************************** USER *********************************/
 

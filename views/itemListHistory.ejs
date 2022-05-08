@@ -162,6 +162,9 @@
               </tr>
             </thead>
 
+            
+           
+
             <form method="post" action=""></form>
             <%itemList.forEach(inventory=> {%>
             <tbody>
@@ -192,11 +195,11 @@
                 <td>
                   <%= inventory.entryDate %>
                 </td>
-                <td class="expire">
+                <td id="expire">
                   <%= inventory.expireDate %>
                 </td>
                 <td class="days">
-                  <%= inventory.age %>
+                 
                 </td>
               </tr>
             </tbody>

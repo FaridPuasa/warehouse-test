@@ -55,6 +55,7 @@
         <div class="w-layout-grid grid-10"><a id="w-node-edbc0ce3-edad-3629-780e-0db1d3820401-e0507387" href="#" class="w-button">Zalora</a><a id="w-node-ee94996b-89a1-acc0-7331-9d9d68337d13-e0507387" href="#" class="w-button">MOH</a><a id="w-node-_8996e896-2009-15bc-dd18-e199c6f0b452-e0507387" href="#" class="w-button">JPMC</a><a id="w-node-_8444249a-9dd6-92e5-d7a7-d6833cd42d72-e0507387" href="#" class="w-button">PHC</a><a id="w-node-_618b0e32-fef2-7e93-4f94-cf8fc4e1bcfa-e0507387" href="#" class="w-button">GRP MY</a><a id="w-node-_8e77703e-ec4a-cf4b-e889-a6be17219d51-e0507387" href="#" class="w-button">GRP SG</a><a id="w-node-_7f31fc29-c111-f2a8-fcbd-ce746c7cc16f-e0507387" href="#" class="w-button">GRP CN</a></div>
       </div>
     </div>
+    <button type="" id="create">Create POD</button>
     <div class="wf-section">
       <div class="div-block-11">
         <div id="w-node-d754e2f5-aed1-3892-5daf-5f26d402a898-e0507387" class="html-embed w-embed">
@@ -82,9 +83,7 @@
 
             
             <tbody>
-              <form action="/list" method="POST"></form>
               <%itemList.forEach(inventory=> {%>
-               
               <tr class="content">
                 <form action="/edit" method="POST">
                 <td><input type="checkbox" id="selected" name="selected"></td>
@@ -127,7 +126,6 @@
               </form>
               </tr>
               <%})%>
-            </form>
             </tbody>
           </table>
         </div>
@@ -291,6 +289,12 @@
 
     <script>
       document.getElementById("myInput").focus();
+    </script>
+
+    <script>
+      //add to list
+      let create = document.getElementById("create")
+
     </script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
