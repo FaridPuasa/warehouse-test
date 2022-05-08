@@ -597,6 +597,10 @@ router.get('/return', (req,res) => {
    
 })
 
+router.post('/edit', (req,res) => {
+    console.log(req.body.trackingNum)
+})
+
 router.post('/success', (req,res) => {
     exportReturn(req,res)
 })
