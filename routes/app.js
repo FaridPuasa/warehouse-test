@@ -45,19 +45,27 @@ router.post('/date', (req,res) => {
     console.log(date)
 })
 
+router.get('/outlist', (req,res) => {
+    inventories.find({}, function(err,inventory){
+        res.render('Listtoschedule', {
+            itemList: inventory,
+            moment: moment
+        })
+    })
+})
 /*************************************************************** VERSION 2 ************************************************************************** */
-router.post("listForOut", (req,res) => {
+router.post("/listForOut", (req,res) => {
     addToItemOut(req,res)
 })
 
 function addToItemOut(req,res){
     let item = req.body
     let date = moment().format("DD/MM/YYYY")
-    let agent = item.agentName
-    let tracker = item.trackingNum
+    let agent = "TEST"
+    let tracker = item.trackingNumber
     let filter = {trackingNumber: tracker}
     let update = {
-        status: "SCHEDULE FOR DELIVERY by" + agent + " at " + date,
+        status: "SCHEDULE FOR DELIVERY by " + agent + " at " + date,
         $push: {
             history:{
                 statusDetail: "SCHDULE FOR DELIVERY" + "[" + req.body.agentName + "]" , 
@@ -68,21 +76,21 @@ function addToItemOut(req,res){
             }
         }
     }
-    let option = {upsert: true, new: true}
+    //let option = {upsert: true, new: true}
     let status = req.body.status
-    if(status.includes("WAREHOUSE") == true){
-        alert(`${tracker} this parcel has not been scan into the database.`)
-    }
-    else{
-        inventories.find(filter,update,option,(err,result) => {
-            if(err){
-                alert(`Failed to add ${tracker} to list.`)
-            }
-        })
-    }
-        
+    console.log(filter)
+    console.log(update)
+    inventories.find(filter,update,(err,result) => {
+        if(err){
+            console.log(err)
+            alert(`Failed to update ${tracker}.`)
+        }else{
+            console.log(result)
+        }
+    })
+    //console.log(status)
     let deliSchedule = new deliScheduleDB({
-        trackingNumber: item.trackingNum,
+        trackingNumber: item.trackingNumber,
         parcelNumber: item.parcelNumber,
         name: item.name,
         address: item.address,
@@ -194,7 +202,7 @@ function addToPod(req,res){
             }
         }
     }
-    inventories.find(filter,update,option, (err,result) => {
+    inventories.findOneAndUpdate(filter,update,option, (err,result) => {
         if(err){
             alert(`Failed to update ${tracker}.`)
         }
@@ -202,7 +210,27 @@ function addToPod(req,res){
             alert(`${tracker} has been successfully update.`)
         }
     })
-
+    let podOut = new podOutDB({
+        trackingNumber: item.trackingNum,
+        parcelNumber: item.parcelNumber,
+        name: item.name,
+        address: item.address,
+        contact: item.contact,
+        value: item.value,
+        area: item.area,
+        areaIndicator: item.areaIndicator,
+        product: item.product,
+        note: item.note,
+        dateSchedule: date,
+    })
+    podOut.save((err)=> {
+        if(err){
+            alert(`${tracker} this parcel has been added into the list.`)
+        }
+        else{
+            res.render('out')
+        }
+    })
 }
 
 
