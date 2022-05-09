@@ -55,60 +55,76 @@
         <div class="w-layout-grid grid-10"><a id="w-node-edbc0ce3-edad-3629-780e-0db1d3820401-e0507387" href="#" class="w-button">Zalora</a><a id="w-node-ee94996b-89a1-acc0-7331-9d9d68337d13-e0507387" href="#" class="w-button">MOH</a><a id="w-node-_8996e896-2009-15bc-dd18-e199c6f0b452-e0507387" href="#" class="w-button">JPMC</a><a id="w-node-_8444249a-9dd6-92e5-d7a7-d6833cd42d72-e0507387" href="#" class="w-button">PHC</a><a id="w-node-_618b0e32-fef2-7e93-4f94-cf8fc4e1bcfa-e0507387" href="#" class="w-button">GRP MY</a><a id="w-node-_8e77703e-ec4a-cf4b-e889-a6be17219d51-e0507387" href="#" class="w-button">GRP SG</a><a id="w-node-_7f31fc29-c111-f2a8-fcbd-ce746c7cc16f-e0507387" href="#" class="w-button">GRP CN</a></div>
       </div>
     </div>
+    <button type="" id="create">Create POD</button>
     <div class="wf-section">
       <div class="div-block-11">
         <div id="w-node-d754e2f5-aed1-3892-5daf-5f26d402a898-e0507387" class="html-embed w-embed">
           <table id="myTable" class="table table-striped table-hover table-bordered table-responsive">
             <thead>
               <tr>
+                <th><input type="checkbox" id="selected" name="selected"></th>
                 <th scope="col">Tracking Number</th>
                 <th scope="col">P/N</th>
                 <th scope="col">Area</th>
+                <th scope="col">Location</th>
                 <th scope="col">Name</th>
                 <th scope="col">Address</th>
                 <th scope="col">Contact</th>
                 <th scope="col">Value</th>
                 <th scope="col">Status</th>
+                <th scope="col">note</th>
                 <th scope="col">Entry Date</th>
                 <th scope="col">Expire Date</th>
                 <th scope="col">Ageing</th>
+                <th></th>
               </tr>
             </thead>
 
 
+            
 
             <tbody>
-              <%itemList.forEach(zaloraInventory=> {%>
+              <%itemList.forEach(inventory=> {%>
               <tr class="content">
-                <th scope="row" class="trackingNum">
-                  <%= zaloraInventory.trackingNumber %>
-                </th>
-                <td><%= zaloraInventory.parcelNumber %></td>
-                <td><%= zaloraInventory.area %></td>
+                <form action="/edit" method="POST">
+                <td><input type="checkbox" id="selected" name="selected"></td>
+                <th scope="row" class="trackingNum"><%= inventory.trackingNumber %><input type="text" id="trackingNum" name="trackingNum" value="<%= inventory.trackingNumber %>" hidden></th>
+                <td><%= inventory.parcelNumber %><input type="text" id="parcelNumber" name="parcelNumber" value="<%= inventory.parcelNumber %>" hidden></td>
+                <td><%= inventory.area %><input type="text" id="area" name="area" value="<%= inventory.area %>" hidden></td>
+                <td><%= inventory.areaIndicator %><input type="text" id="areaIndicator" name="areaIndicator" value="<%= inventory.areaIndicator %>" hidden></td>
                 <td>
-                  <%= zaloraInventory.name %>
+                  <%= inventory.name %><input type="text" id="name" name="name" value="<%= inventory.name %>" hidden>
                 </td>
                 <td>
-                  <%= zaloraInventory.address %>
+                  <%= inventory.address %><input type="text" id="address" name="address" value="<%= inventory.address %>" hidden>
                 </td>
                 <td>
-                  <%= zaloraInventory.contact %>
+                  <%= inventory.contact %><input type="text" id="contact" name="contact" value="<%= inventory.contact %>" hidden>
                 </td>
                 <td>
-                  <%= zaloraInventory.value %>
+                  <%= inventory.value %><input type="text" id="value" name="value" value="<%= inventory.value %>" hidden>
                 </td>
                 <td class="itemStatus">
-                  <%= zaloraInventory.status %>
+                  <%= inventory.status %><input type="text" id="status" name="status" value="<%= inventory.status %>" hidden>
                 </td>
                 <td>
-                  <%= zaloraInventory.entryDate %>
+                  <%= inventory.note %><input type="text" id="note" name="note" value="<%= inventory.note %>" hidden>
+                </td>
+                <td>
+                  <%= inventory.entryDate %>
                 </td>
                 <td class="expire">
-                  <%= zaloraInventory.expireDate %>
+                  <%= inventory.expireDate %>
                 </td>
                 <td class="days">
-                  <%= zaloraInventory.age %>
+                  <%= inventory.age %>
                 </td>
+                <td>
+                  <button type="submit">edit</button>
+                  <button>delete</button>
+                  <input type="text" name="formMETHOD" value="edit" hidden>
+                </td> 
+              </form>
               </tr>
               <%})%>
             </tbody>
@@ -274,6 +290,12 @@
 
     <script>
       document.getElementById("myInput").focus();
+    </script>
+
+    <script>
+      //add to list
+      let create = document.getElementById("create")
+
     </script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>

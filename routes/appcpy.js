@@ -109,4 +109,32 @@ function itemout(req,res){
     })
 }
 
+function pod(req,res){
+
+}
+
+function selfcollect(req,res){
+
+}
+
+function reentry(req,res){
+
+}
+
+function zalreturn(req,res){
+
+}
+
+function exportReturn(req,res){
+
+}
+
+function dispatch(req,res){
+
+}
+
+
+
+
+
 module.exports = router;
