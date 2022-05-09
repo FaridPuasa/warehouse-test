@@ -667,7 +667,7 @@ router.get('/itemList', (req,res) => {
 })
 
 
-router.get('/itemListHistory/:page', function (req,res,next) {
+router.get('/itemListHistory/:page', (req,res,next) => {
     var perPage = 10
     var page = req.params.page || 1
 
@@ -686,6 +686,8 @@ router.get('/itemListHistory/:page', function (req,res,next) {
             })
         })
 })
+
+
 
 router.get('/dispatcher-report', (req,res) => {
     dispatchDB.find({}, function(err,dispatch) {
