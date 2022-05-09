@@ -666,13 +666,25 @@ router.get('/itemList', (req,res) => {
     })
 })
 
-router.get('/itemListHistory', (req,res) => {
-    inventories.find({}, function(err,inventory){
-        res.render('itemListHistory', {
-            itemList: inventory,
-            moment: moment
+
+router.get('/itemListHistory/:page', function (req,res,next) {
+    var perPage = 10
+    var page = req.params.page || 1
+
+    inventories
+        .find({})
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .exec(function(err, inventory) {
+            inventories.count().exec(function(err, count) {
+                if (err) return next(err)
+                res.render('teslist', {
+                    itemList: inventory,
+                    current: page,
+                    pages: Math.ceil(count / perPage)
+                })
+            })
         })
-    })
 })
 
 router.get('/dispatcher-report', (req,res) => {

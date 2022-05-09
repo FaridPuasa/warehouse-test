@@ -1,0 +1,117 @@
+<div class="col-sm-6 pb-3 text-center">
+          <button type="button" class="btn btn-secondary detail-btn" data-toggle="modal" data-target="#openModal<%= index %>"><%= inventory.trackingNumber %></button>
+        </div>
+          </div>
+          <!-- Modal - Start -->
+              <div class="modal fade" id="openModal<%= index %>" tabindex="-1" role="dialog" aria-labelledby="openModal<%= index %>Label" aria-hidden="true">
+
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="openModal<%= index %>Label"><%= inventory.trackingNumber %></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                  <!--Modal body - Start-->
+
+                  <div class="modal-body" id="runner-modal"> 
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Name:</small>
+                      </div>
+                      <div class="divTableCell" id="deli_id">
+                        <small><%= order._id %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Contact:</small>
+                      </div>
+                      <div class="divTableCell" id="customer_name">
+                        <small><%= order.Username %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Address:</small>
+                      </div>
+                      <div class="divTableCell" id="customer_contact">
+                        <small><%= order.Phone %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Value:</small>
+                      </div>
+                      <div class="divTableCell" id="deli_date">
+                        <small><%= order.Deli_date.toDateString() %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Parcel Number:</small>
+                      </div>
+                      <div class="divTableCell" id="deli_time">
+                        <small><%= formatTime(order.Deli_time) %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Product:</small>
+                      </div>
+                      <div class="divTableCell" id="pickup_address">
+                        <small><%= order.Pickup_address %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Current Status:</small>
+                      </div>
+                      <div class="divTableCell" id="deli_address">
+                        <small><%= order.Delivery_address %></small>
+                      </div>
+                    </div>
+
+                    <div class="divTableRow">
+                      <div class="divTableCell">
+                        <small>Previous Status:</small>
+                      </div>
+                      <div class="divTableCell" id="deli_status">
+                        <small><%= order.Item_stat %></small>
+                      </div>
+                    </div>
+
+                    <!--Buttons-->
+                    <div class="container d-flex">
+                      <div class="row ml-auto mt-2">
+                        <div class="col-sm-12 d-flex">
+
+                          <form action="/dashboard" method="POST">
+                            <input type="hidden" id="DeliveryID" name="DeliveryID" value="<%= order._id %>">
+                            <input type="hidden" id="orderUser" name="orderUser" value="<%= order.Username %>">
+                            <input type="hidden" id="orderRunner" name="orderRunner" value="<%= username %>">
+                            <input type="hidden" name="formMethod" value="openAccept">
+                            <!-- Accept button -->
+                            <button type="submit" class="btn btn-success mr-3">Accept</button>
+            
+                          </form>
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          
+                        </div>
+                      </div>
+                    </div>
+                    <!--Buttons-->
+
+                  </div><!--Modal body - End-->
+                </div>
+              </div>
+              </div>
+              <!-- Modal - End -->
