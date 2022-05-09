@@ -439,6 +439,18 @@ function checkTrackingNum(field, autoMove) {
                         document.getElementById("parcelNumber").value = parseInt(localStorage.getItem("lastCountKBSERIA")) + 1;
                     }
 
+                    if (area == "LUMUT") {
+                        document.getElementById("parcelNumber").value = parseInt(localStorage.getItem("lastCountLUMUT")) + 1;
+                    }
+
+                    if (area == "SERIA") {
+                        document.getElementById("parcelNumber").value = parseInt(localStorage.getItem("lastCountSERIA")) + 1;
+                    }
+
+                    if (area == "KB") {
+                        document.getElementById("parcelNumber").value = parseInt(localStorage.getItem("lastCountKB")) + 1;
+                    }
+
                     if (area == "TEMBURONG") {
                         document.getElementById("parcelNumber").value = parseInt(localStorage.getItem("lastCountTEMBURONG")) + 1;
                     }
@@ -586,6 +598,30 @@ document.addEventListener("DOMContentLoaded", function (event) {
         document.getElementById("lastCountKBSERIA").innerText = "KBSERIA: " + parseInt(localStorage.getItem("lastCountKBSERIA"));
     }
 
+    if (localStorage.getItem("lastCountLUMUT") == null) {
+        localStorage.setItem("lastCountLUMUT", 0);
+        document.getElementById("lastCountLUMUT").innerText = "LUMUT: " + parseInt(localStorage.getItem("lastCountLUMUT"));
+    }
+    if (localStorage.getItem("lastCountLUMUT") != null) {
+        document.getElementById("lastCountLUMUT").innerText = "LUMUT: " + parseInt(localStorage.getItem("lastCountLUMUT"));
+    }
+
+    if (localStorage.getItem("lastCountSERIA") == null) {
+        localStorage.setItem("lastCountSERIA", 0);
+        document.getElementById("lastCountSERIA").innerText = "SERIA: " + parseInt(localStorage.getItem("lastCountSERIA"));
+    }
+    if (localStorage.getItem("lastCountSERIA") != null) {
+        document.getElementById("lastCountSERIA").innerText = "SERIA: " + parseInt(localStorage.getItem("lastCountSERIA"));
+    }
+
+    if (localStorage.getItem("lastCountKB") == null) {
+        localStorage.setItem("lastCountKB", 0);
+        document.getElementById("lastCountKB").innerText = "KB: " + parseInt(localStorage.getItem("lastCountKB"));
+    }
+    if (localStorage.getItem("lastCountKB") != null) {
+        document.getElementById("lastCountKB").innerText = "KB: " + parseInt(localStorage.getItem("lastCountKB"));
+    }
+
     if (localStorage.getItem("lastCountTEMBURONG") == null) {
         localStorage.setItem("lastCountTEMBURONG", 0);
         document.getElementById("lastCountTEMBURONG").innerText = "TEMBURONG: " + parseInt(localStorage.getItem("lastCountTEMBURONG"));
@@ -657,6 +693,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             if (document.getElementById("area").value == "KB / SERIA") {
                 localStorage.setItem("lastCountKBSERIA", document.getElementById("parcelNumber").value);
+            }
+
+            if (document.getElementById("area").value == "LUMUT") {
+                localStorage.setItem("lastCountLUMUT", document.getElementById("parcelNumber").value);
+            }
+
+            if (document.getElementById("area").value == "SERIA") {
+                localStorage.setItem("lastCountSERIA", document.getElementById("parcelNumber").value);
+            }
+
+            if (document.getElementById("area").value == "KB") {
+                localStorage.setItem("lastCountKB", document.getElementById("parcelNumber").value);
             }
 
             if (document.getElementById("area").value == "TEMBURONG") {
