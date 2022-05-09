@@ -172,7 +172,7 @@
                         <span class="popuptext" id="<%= inventory.trackingNumber %>"><%= inventory.trackingNumber %></span>
                     </div>
                 </th>
-                <td><%= inventory.parcelNumber %></td>
+                <td><%= inventory.parcelNumber %><input type="text" value="<%= inventory.parcelNumber %>" name ="parcelNumber"></td>
                 <td><%= inventory.area %></td>
                 <td>
                   <%= inventory.name %>
@@ -198,6 +198,7 @@
                 <td class="days">
                   <%= inventory.age %>
                 </td>
+                <td><button>edit</button></td>
               </tr>
             </tbody>
             <%})%>

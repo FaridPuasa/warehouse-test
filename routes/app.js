@@ -24,7 +24,7 @@ let currentUser = {}
 
 //exporting data from mongo to csv
 
-router.get("/cs", (req,res)=>{
+router.get("/extract", (req,res)=>{
     res.render('testSearch')
 })
 
@@ -203,7 +203,7 @@ function userEditable(req,res){
 }
 
 function userAttendance(req,res){
-    let dateTime = moment().format()
+    let dateTime = moment().format("DD/MM/YYYY")
     let body = req.body
     let filter = {icNumber: body.icNumber}
     let update = {$push: {attendance:{clockIn: dateTime, clockOut: dateTime}}}
@@ -611,7 +611,7 @@ router.get('/selfcollect', (req,res) => {
 })
 
 router.post('/confirmed', (req,res) => {
-    let date = moment().format("L");
+    let date = moment().format("DD/MM/YYYY");
     let filter = {trackingNumber: req.body.trackingNum}
     console.log(req.body.trackingNum)
     console.log(req.body.trackingNumber)
@@ -649,7 +649,7 @@ router.post('/confirmed', (req,res) => {
 
 //This is used for return details >>>>> ADD USER <<<<<<
 function exportReturn(req,res){
-    let date = moment().format()
+    let date = moment().format("DD/MM/YYYY")
     let filter = {trackingNumber: req.body.trackingNumber}
     let update = {status: "RETURN TO MY"}
     let option = {upsert: true, new: true}
@@ -722,7 +722,7 @@ function exportReturn(req,res){
 //This is use for dispatcher to check their POD
 function dispatcherPod(req,res){
     let body = req.body
-    let date = moment().format("L")
+    let date = moment().format("DD/MM/YYYY")
     let tracker = body.trackingNum
     let update = {status: "COMPLETED" + " at " + date, $push: {history: {statusDetail: "COMPLETED", dateUpdated: date,}}}
     let option = {upsert: true, new: true}
@@ -735,7 +735,7 @@ function dispatcherPod(req,res){
 //This is use for end of day report
 function dispatcherRecord(req,res){
     let dispatch = req.body
-    let date = moment().format("L")
+    let date = moment().format("DD/MM/YYYY")
     let ref = "GR/Dispatch/" + dispatch.name + date
     let dispatcher = new dispatchDB({
         ref: ref,//Auto generate
@@ -777,7 +777,7 @@ function dispatcherRecord(req,res){
 
 //reEntry parcels >>>>>>>>> ADD USER <<<<<<<<<<<<
 function reEntry(req,res){
-    let date = moment().format();
+    let date = moment().format("DD/MM/YYYY");
     let filter = {trackingNumber: req.body.trackingNumber}
     let history = {
         history: {
@@ -839,13 +839,13 @@ function reEntry(req,res){
 //Item out into staging area
 function itemOut(req,res){
     let status = {status: req.body.status}
-    let date = moment().format("L")
+    let date = moment().format("DD/MM/YYYY")
     let tracker = {trackingNumber: req.body.trackingNum}
     let update = {
-        status: "OUT FOR DELIVERY " + "[" + req.body.agentName + "]" + " at " + date, 
+        status: "SCHEDULE FOR DELIVERY " + " to " + req.body.agentName + " at " + date, 
         $push:{
             history: {
-                statusDetail: "OUT FOR DELIVERY" + "[" + req.body.agentName + "]" , 
+                statusDetail: "SCHEDULE FOR DELIVERY " + " to " + req.body.agentName , 
                 dateUpdated: date,
                 updateBy: req.body.userName, 
                 updateById: req.body.userID, 
@@ -928,7 +928,7 @@ function editableList(req,res){
 //POD access by warehouse supervisor and transport controller
 function pod(req,res){
     let body = req.body
-    let date = moment().format("L")
+    let date = moment().format("DD/MM/YYYY")
     let ref = "GR/POD/" + body.agentName + "[" + body.areaCode + "]" + "/" + date
     let tracker = body.trackingNumC
     console.log(tracker)
@@ -1004,7 +1004,7 @@ function pod(req,res){
 
 //Item into warehouse
 function itemin(req,res){
-    let date = moment().format('L')
+    let date = moment().format('DD/MM/YYYY')
     let parcelStatus = {
         statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]", 
         dateUpdated: date,
@@ -1126,7 +1126,7 @@ function pharmacyIn (req,res){
 
 //Self Collect Pharmacy
 function pharmaSelfCollect(req,res){
-    let date = moment().format();
+    let date = moment().format("DD/MM/YYYY");
     let filter = {trackingNumber: req.body.trackingNumber}
     let update = {status: "SELF COLLECTED" + " at " + date}
     let history = {history: {statusDetail: "SELF COLLECTED" + " at " + date}}
@@ -1170,7 +1170,7 @@ router.get('/grpmy',(req,res) => {
 
 //After DHL Pickup
 function iteminMy(req,res){
-    let date = moment().format()
+    let date = moment().format("DD/MM/YYYY")
     let parcelStatus = "IN WAREHOUSE[MY]" + " at " + date
     let body = req.body
     let myInventory = new myInventoryDB ({
