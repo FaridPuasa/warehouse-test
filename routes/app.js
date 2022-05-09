@@ -9,6 +9,7 @@ const alert = require('alert');
 //const statusDB = require('../models/inventory')
 const inventories = require('../models/inventories');
 const deliScheduleDB = require('../models/delischedule');
+const podOutDB = require('../models/podOut');
 const userDB = require('../models/user')
 const podDB = require('../models/pod');
 const dispatchDB = require('../models/dispatch');
@@ -32,6 +33,16 @@ router.get("/cs", (req,res)=>{
             moment: moment
         })
     })
+})
+
+router.get('/datey', (req,res) => {
+    res.render('testdate')
+})
+
+router.post('/date', (req,res) => {
+    let date = moment(req.body.startDate).format('DD/MM/YYYY')
+    console.log(req.body.startDate)
+    console.log(date)
 })
 
 /*************************************************************** VERSION 2 ************************************************************************** */
@@ -146,7 +157,7 @@ function removedFromSchedule(req,res){
             }
         }
     }
-    inventories.find(filter,update,option, (err,res) => {
+    inventories.find(filter,update,option, (err,result) => {
         if(err){
             alert(`Failed to update ${tracker}`)
         }
@@ -163,6 +174,35 @@ function removedFromSchedule(req,res){
             })
         }
     })
+}
+
+function addToPod(req,res){
+    let date = moment().format()
+    let item = req.body
+    let tracker = item.trackingNumber
+    let agent = item.agentName
+    let filter = {trackingNumber: item.tracker}
+    let update = {
+        status: "OUT FOR DELIVERY at " + date + " by " + agent,
+        $push: {
+            history: {
+                statusDetail: "OUT FOR DELIVERY at " + date + " by " + agent , 
+                dateUpdated: date,
+                updateBy: req.body.userName, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.pos
+            }
+        }
+    }
+    inventories.find(filter,update,option, (err,result) => {
+        if(err){
+            alert(`Failed to update ${tracker}.`)
+        }
+        else{
+            alert(`${tracker} has been successfully update.`)
+        }
+    })
+
 }
 
 
