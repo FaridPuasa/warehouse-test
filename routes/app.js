@@ -666,24 +666,26 @@ router.get('/itemList', (req,res) => {
     })
 })
 
-router.get('/pew/:page', (req,res,next) => {
-    var perPage = 5
+router.get('/pew/:page-:limit', (req,res,next) => {
+    var limit = req.params.limit || 10
     var page = req.params.page || 1
 
     inventories
         .find({})
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
+        .skip((limit * page) - limit)
+        .limit(limit)
         .exec(function(err, inventory) {
             inventories.count().exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
                     itemList: inventory,
                     current: page,
-                    pages: Math.ceil(count / perPage)
+                    limit: limit,
+                    pages: Math.ceil(count / limit)
                 })
             })
         })
+        console.log(page)
 })
 
 router.get('/itemListHistory/:page', (req,res,next) => {
@@ -704,6 +706,7 @@ router.get('/itemListHistory/:page', (req,res,next) => {
                 })
             })
         })
+       
 })
 
 
