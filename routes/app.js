@@ -685,7 +685,6 @@ router.get('/pew/:page-:limit', (req,res,next) => {
                 })
             })
         })
-        console.log(page)
 })
 
 router.get('/itemListHistory/:page', (req,res,next) => {

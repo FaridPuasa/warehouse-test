@@ -10,6 +10,7 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="Webflow" name="generator" />
     <link href="https://uploads-ssl.webflow.com/61fb4a164eca130338cafeaa/css/gorushwms.webflow.4f9ad38d1.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
@@ -51,6 +52,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="/resources/demos/style.css">
   </head>
+
   <body class="body">
     <div class="section wf-section">
       <div class="w-container"><a whenClicked="history.back()" href="#" class="button-8 w-button">&lt; Go Back</a>
@@ -74,11 +76,9 @@
                 <th scope="col">Location</th>
                 <th scope="col">Name</th>
                 <th scope="col">Address</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Value</th>
                 <th scope="col">Status</th>
                 <th scope="col">Warehouse Remark</th>
-                <th scope="col">Entry Date</th>
+                
                 <th scope="col">Expire Date</th>
                 <th scope="col">Ageing</th>
                 <th></th>
@@ -101,30 +101,132 @@
               </div>
               <%itemList.forEach((inventory,index)=> {%>
 
-                <!-- Modal -->
+                <!-- Modal Display Details -->
                 <div class="modal fade" id="tnModal<%= index %>" tabindex="-1" role="dialog" aria-labelledby="tnModalLabel<%= index %>" aria-hidden="true">
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="tnModalLabel<%= index %>"><%= inventory.trackingNumber %></h5>
+                        <h5 class="modal-title m-auto" id="tnModalLabel<%= index %>"><%= inventory.trackingNumber %> | <%= inventory.parcelNumber %></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
+
                         </button>
                       </div>
-                      <div class="modal-body">
-                        <p><%= inventory.name %></p>
-                        <p><%= inventory.name %></p>
-                        <p><%= inventory.name %></p>
-                        <p><%= inventory.name %></p>
-                        <p><%= inventory.name %></p>
+                      <div class="modal-body container col-md-12">
+                        
+                          <div class="row">
+                              <div class="col-md-4 mx-auto">
+                                <h4>Name:</h4>
+                                <p><%= inventory.name %></p>
+                                <h4>Contact:</h4>
+                                <p><%= inventory.contact %></p>
+                                <h4>Address:</h4>
+                                <p><%= inventory.address %></p>
+                                <h4>Product:</h4>
+                                <p><%= inventory.product %></p>
+                              </div>
+          
+                              <div class="col-md-6 mx-auto">
+                                <h4>Parcel History:</h4>
+                                <% for(var i = 0 ; i < inventory.history.length; i++) {%>
+                                  <ul>
+                                    <li><%= inventory.history[i].statusDetail %></li>
+                                      <ul>
+                                        <li><b>Updated on:</b> &nbsp;<%= inventory.history[i].dateUpdated %></li>
+                                      </ul>
+                                  </ul>
+                                <% } %>
+                              </div>
+                              
+                              <div class="col-md-2 mx-auto">
+                                <h3 class="my-auto">Value: $<%= inventory.value %></h3>
+                                <h3>Area: </h3>
+                                <h3><%= inventory.area %></h3>
+                                <h3>Location: </h3>
+                                <h3><%= inventory.areaIndicator %></h3>
+                              </div>
+                          </div>
+                        
                       </div>
+
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
                       </div>
+
                     </div>
                   </div>
                 </div>
+
+                <!-- Modal Edit Details -->
+                <div class="modal fade" id="editModal<%= index %>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel<%= index %>" aria-hidden="true">
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title m-auto" id="editModalLabel<%= index %>"><%= inventory.trackingNumber %> | <%= inventory.parcelNumber %></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+                        </button>
+                      </div>
+                      <div class="modal-body container col-md-12">
+                        <form class="form-inline">
+
+                          <div class="form-group mb-2">
+                            <label for="staticEmail2" class="sr-only">Email</label>
+                            <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com">
+                          </div>
+
+                          <div class="form-group mx-sm-3 mb-2">
+                            <label for="inputPassword2" class="sr-only">Password</label>
+                            <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
+                          </div>
+
+                          <button type="submit" class="btn btn-primary mb-2">Confirm identity</button>
+                          
+                        </form>
+                        
+                          <div class="row">
+                              <div class="col-md-4 mx-auto">
+                                <h4>Name:</h4>
+                                <p><%= inventory.name %></p>
+                                <h4>Contact:</h4>
+                                <p><%= inventory.contact %></p>
+                                <h4>Address:</h4>
+                                <p><%= inventory.address %></p>
+                                <h4>Product:</h4>
+                                <p><%= inventory.product %></p>
+                              </div>
+          
+                              <div class="col-md-6 mx-auto">
+                                <h4>Parcel History:</h4>
+                                <% for(var i = 0 ; i < inventory.history.length; i++) {%>
+                                  <ul>
+                                    <li><%= inventory.history[i].statusDetail %></li>
+                                      <ul>
+                                        <li><b>Updated on:</b> &nbsp;<%= inventory.history[i].dateUpdated %></li>
+                                      </ul>
+                                  </ul>
+                                <% } %>
+                              </div>
+                              
+                              <div class="col-md-2 mx-auto">
+                                <h3 class="my-auto">Value: $<%= inventory.value %></h3>
+                                <h3>Area: </h3>
+                                <h3><%= inventory.area %></h3>
+                                <h3>Location: </h3>
+                                <h3><%= inventory.areaIndicator %></h3>
+                              </div>
+                          </div>
+                        
+                      </div>
+
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary"><i class="far fa-save"></i></button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
 
               <tr class="content">
                 <form action="/edit" method="POST">
@@ -141,21 +243,11 @@
                   <span><%= inventory.address %></span>
                   <input type="text" id="address" name="address" value="<%= inventory.address %>" hidden>
                 </td>
-                <td>
-                  <span><%= inventory.contact %></span>
-                  <input type="text" id="contact" name="contact" value="<%= inventory.contact %>" hidden>
-                </td>
-                <td><span><%= inventory.value %></span>
-                  <input type="text" id="value" name="value" value="<%= inventory.value %>" hidden>
-                </td>
                 <td class="itemStatus"><span><%= inventory.status %></span>
                   <input type="text" id="status" name="status" value="<%= inventory.status %>" hidden>
                 </td>
                 <td><span><%= inventory.note %></span>
                   <input type="text" id="note" name="note" value="<%= inventory.note %>" hidden>
-                </td>
-                <td><span><%= inventory.entryDate %></span>
-                  
                 </td>
                 <td class="expire">
                   <span><%= inventory.expireDate %></span>
@@ -163,8 +255,12 @@
                 <td class="days"><span><%= inventory.age %></span>
                 </td>
                 <td>
-                  <button type="submit">edit</button>
-                  <button>delete</button>
+                  <button type="button" class="btn btn-info p-1" data-toggle="modal" data-target="#editModal<%= index %>">
+                    <i class="far fa-edit"></i>
+                  </button>
+                  <button type="button " class="btn btn-warning p-1">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
                   <input type="text" name="formMETHOD" value="edit" hidden>
                 </td> 
               </form>
