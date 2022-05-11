@@ -70,9 +70,9 @@ function addToItemOut(req,res){
             $push: { history: {
                 statusDetail: "SCHEDULE FOR DELIVERY by " + agent + " at " + tomorrow, 
                 dateUpdated: date,
-                updateBy: req.body.userName, 
+                updateBy: req.body.username, 
                 updateById: req.body.userID, 
-                updateByPos: req.body.pos
+                updateByPos: req.body.userPos
             }
         }
     }
@@ -167,9 +167,9 @@ function removedFromSchedule(req,res){
             history:{
                 statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]" , 
                 dateUpdated: date,
-                updateBy: req.body.userName, 
+                updateBy: req.body.username, 
                 updateById: req.body.userID, 
-                updateByPos: req.body.pos
+                updateByPos: req.body.userPos
             }
         }
     }
@@ -203,9 +203,9 @@ function addToPod(req,res){
             history: {
                 statusDetail: "OUT FOR DELIVERY by " + agent, 
                 dateUpdated: date,
-                updateBy: req.body.userName, 
+                updateBy: req.body.username, 
                 updateById: req.body.userID, 
-                updateByPos: req.body.pos
+                updateByPos: req.body.userPos
             }
         }
     }
@@ -677,21 +677,26 @@ router.get('/itemList', (req,res) => {
     })
 })
 
-router.get('/pew/:page-:limit', (req,res,next) => {
+router.get('/list/:page/:limit', (req,res,next) => {
     var limit = req.params.limit || 10
     var page = req.params.page || 1
 
     inventories
         .find({})
+        .sort({entryDate: -1})
         .skip((limit * page) - limit)
         .limit(limit)
         .exec(function(err, inventory) {
-            inventories.count().exec(function(err, count) {
+            inventories.count({}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
                     itemList: inventory,
+                    total: count,
                     current: page,
                     limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -882,9 +887,9 @@ router.post('/confirmed', (req,res) => {
             history: {
                 statusDetail: "SELF COLLECTED" + "["+ req.body.csName +"]", 
                 dateUpdated: date,
-                updateBy: req.body.userName, 
+                updateBy: req.body.username, 
                 updateById: req.body.userID, 
-                updateByPos: req.body.pos
+                updateByPos: req.body.userPos
             }
         }
     }
@@ -1045,9 +1050,9 @@ function reEntry(req,res){
         history: {
             statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]",
             dateUpdated: date, 
-            updateBy: req.body.userName, 
+            updateBy: req.body.username, 
             updateById: req.body.userID, 
-            updateByPos: req.body.pos
+            updateByPos: req.body.userPos
         }
     }
     let update = {
@@ -1109,9 +1114,9 @@ function itemOut(req,res){
             history: {
                 statusDetail: "SCHEDULE FOR DELIVERY " + " to " + req.body.agentName , 
                 dateUpdated: date,
-                updateBy: req.body.userName, 
+                updateBy: req.body.username, 
                 updateById: req.body.userID, 
-                updateByPos: req.body.pos
+                updateByPos: req.body.userPos
             }
         }
     }
@@ -1202,9 +1207,9 @@ function pod(req,res){
                 history: {
                     statusDetail: "SCHEDULED FOR DELIVERY", 
                     dateUpdated: date,
-                    updateBy: req.body.userName, 
+                    updateBy: req.body.username, 
                     updateById: req.body.userID, 
-                    updateByPos: req.body.pos 
+                    updateByPos: req.body.userPos 
                 }
             }
         }
@@ -1270,9 +1275,9 @@ function itemin(req,res){
     let parcelStatus = {
         statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]", 
         dateUpdated: date,
-        updateBy: req.body.userName, 
+        updateBy: req.body.username, 
         updateById: req.body.userID, 
-        updateByPos: req.body.pos
+        updateByPos: req.body.userPos
     }
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,

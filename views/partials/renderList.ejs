@@ -1,0 +1,27 @@
+<%itemList.forEach((inventory,index)=> {%>
+
+    <!--Modal Details Here-->
+    <%- include('partials/modalDetail.ejs') %>
+    <!--Modal Edit Here-->
+    <%- include('partials/modalEditTC.ejs') %>
+
+  <tr class="content">
+    <th scope="row" class="trackingNum"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tnModal<%= index %>">
+      <%= inventory.trackingNumber %>
+    </button></th>
+    <td><span><%= inventory.parcelNumber %></span></td>
+    <td><span><%= inventory.area %></span></td>
+    <td><span><%= inventory.areaIndicator %></span></td>
+    <td><span><%= inventory.name %></span></td>
+    <td><span><%= inventory.address %></span></td>
+    <td class="itemStatus"><span><%= inventory.status %></span></td>
+    <td><span><%= inventory.note %></span></td>
+    <td class="expire"><span><%= inventory.expireDate %></span></td>
+    <td class="days"><span><%= inventory.age %></span></td>
+    <td>
+      <button type="button" class="btn btn-info p-1" data-toggle="modal" data-target="#editModal<%= index %>">
+        <i class="far fa-edit"></i>
+      </button>
+    </td> 
+  </tr>
+<%})%>
