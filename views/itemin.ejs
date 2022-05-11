@@ -1,6 +1,6 @@
 
 <!DOCTYPE html><!-- This site was created in Webflow. http://www.webflow.com -->
-<!-- Last Published: Wed May 11 2022 01:21:22 GMT+0000 (Coordinated Universal Time) -->
+<!-- Last Published: Wed May 11 2022 01:40:32 GMT+0000 (Coordinated Universal Time) -->
 <html data-wf-domain="gorushwms.webflow.io" data-wf-page="624b8f4700ede8fadf8a69b0" data-wf-site="61fb4a164eca130338cafeaa" data-wf-status="1">
   <head>
     <meta charset="utf-8" />
@@ -9,7 +9,7 @@
     <meta content="Item In" property="twitter:title" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="Webflow" name="generator" />
-    <link href="https://uploads-ssl.webflow.com/61fb4a164eca130338cafeaa/css/gorushwms.webflow.f360c8baf.css" rel="stylesheet" type="text/css" />
+    <link href="https://uploads-ssl.webflow.com/61fb4a164eca130338cafeaa/css/gorushwms.webflow.185973a29.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
     <script type="text/javascript">
       WebFont.load({
@@ -50,53 +50,62 @@
       <div class="wf-section">
         <div id="w-node-_4c07a1f6-70c3-4278-2a29-5a88b3bdee6d-df8a69b0" class="div-block">
           <h1 id="w-node-_5c40cdcd-743f-e2a9-4ca2-eec7aae7df1c-df8a69b0" class="heading-2">Item In</h1>
-          <div class="w-layout-grid grid-16">
+          <div class="w-layout-grid item-in-input-grid">
             <div id="w-node-_818ecb50-b0ff-4329-13e6-bc1c8a57cf6f-df8a69b0">
               <div class="w-layout-grid item-in-tn-grid">
-                <div id="trackingnumberarea" class="div-block-9 w-node-_9ba7efdd-89ac-d7f6-fb00-8bff79212d03-df8a69b0">
-                  <div id="inputTnArea" class="div-block-2">
-                    <p id="trackingNumField" class="paragraph">Tracking Number:</p>
-                    <div class="w-embed"><input name="trackingNum" id="trackingNum" class="text-field-2 w-input" onkeyup="checkTrackingNum(this, 'trackingNum')" type="text" maxlength="9" /></div>
-                  </div>
-                </div>
                 <div id="wronginput" class="div-block-3 w-node-f83a942f-23b3-95cd-569c-75afb3510bdc-df8a69b0">
                   <h4 class="heading-6">Please check your tracking number</h4>
                 </div>
                 <div id="loading" class="div-block-4 w-node-_61f3dd8c-dcac-d144-f7f5-0ca696058069-df8a69b0">
                   <h4 class="heading-7">Please wait...</h4>
                 </div>
-                <div id="dateEntryArea" class="div-block-15 w-node-_515879ce-fa1a-8be7-6d67-210d26a8022e-df8a69b0">
-                  <p id="trackingNumField" class="paragraph">Date of Entry:</p>
-                  <div class="w-embed"><input type="text" class="text-field-2 w-input" name="dateArriveTemp" id="dateArriveTemp"></div>
-                </div>
-                <div id="areaCodeArea" class="div-block-15 w-node-f87b7145-4d26-f3d1-3a7c-a0bdd10f7545-df8a69b0">
-                  <p id="trackingNumField" class="paragraph">Area:</p>
-                  <div class="w-embed"><select name="areaCodeTemp" id="areaCodeTemp" class="select-field-2 w-select" style="border-radius: 5px;">
-                      <option value="">Select one...</option>
-                      <option value="B1">B1</option>
-                      <option value="B2">B2</option>
-                      <option value="G1">G1</option>
-                      <option value="G2">G2</option>
-                      <option value="JT3">JT3</option>
-                      <option value="JT2">JT2</option>
-                      <option value="JT1">JT1</option>
-                      <option value="TEMBURONG">TEMBURONG</option>
-                      <option value="TUTONG">TUTONG</option>
-                      <option value="KB">KB</option>
-                      <option value="SERIA">SERIA</option>
-                      <option value="LUMUT">LUMUT</option>
-                    </select></div>
+                <div id="trackingnumberarea" class="div-block-17 w-node-d4de493c-547d-2497-cd40-618f7906463a-df8a69b0">
+                  <div class="w-layout-grid grid-18">
+                    <div id="dateEntryArea" class="div-block-15 w-node-_515879ce-fa1a-8be7-6d67-210d26a8022e-df8a69b0">
+                      <p id="trackingNumField" class="paragraph">Arrive Date:</p>
+                      <div class="w-embed"><input type="text" class="text-field-2 w-input" name="dateArriveTemp" id="dateArriveTemp"></div>
+                    </div>
+                    <div id="areaCodeArea" class="div-block-15 w-node-f87b7145-4d26-f3d1-3a7c-a0bdd10f7545-df8a69b0">
+                      <p id="trackingNumField" class="paragraph">Area:</p>
+                      <div class="w-embed"><select name="areaCodeTemp" id="areaCodeTemp" class="select-field-2 w-select" style="border-radius: 5px;">
+                          <option value="">Select one...</option>
+                          <option value="B1">B1</option>
+                          <option value="B2">B2</option>
+                          <option value="G1">G1</option>
+                          <option value="G2">G2</option>
+                          <option value="JT3">JT3</option>
+                          <option value="JT2">JT2</option>
+                          <option value="JT1">JT1</option>
+                          <option value="TEMBURONG">TEMBURONG</option>
+                          <option value="TUTONG">TUTONG</option>
+                          <option value="KB">KB</option>
+                          <option value="SERIA">SERIA</option>
+                          <option value="LUMUT">LUMUT</option>
+                        </select></div>
+                    </div>
+                    <div id="inputTnArea" class="div-block-2 w-node-f839f621-a7a1-c5b2-01d2-85510e07929a-df8a69b0">
+                      <p id="trackingNumField" class="paragraph">Tracking Number:</p>
+                      <div class="w-embed"><input name="trackingNum" id="trackingNum" class="text-field-2 w-input" onkeyup="checkTrackingNum(this, 'trackingNum')" type="text" maxlength="9" /></div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div id="w-node-_442f2a5e-8613-d8a6-4025-ce34025fc67a-df8a69b0" class="form-block w-form">
                 <form id="itemIn" name="wf-form-itemIn" data-name="itemIn" redirect="/itemin" data-redirect="/itemin" action="/itemin" method="post" class="form">
                   <div class="w-layout-grid grid-item-in-display">
+                    <div id="w-node-c90a5637-86bb-d2e9-5741-09ab3f719b16-df8a69b0" class="div-block-16">
+                      <div id="w-node-f483a4fb-2119-146b-e9c9-c5fe48b0cad9-df8a69b0" class="w-layout-grid grid-17">
+                        <div id="w-node-_8c79aee4-7390-ba9e-488d-2d415677ae3c-df8a69b0"><label for="dateArrive">Arrive Date:</label><input type="text" class="text-field w-input" maxlength="256" name="dateArrive" data-name="dateArrive" placeholder="" id="dateArrive" /></div>
+                        <div id="w-node-_5d839932-6b50-c915-88e0-1f4d911d0dee-df8a69b0"><label for="area">Area:</label><input type="text" class="text-field w-input" maxlength="256" name="area" data-name="area" placeholder="" id="area" /></div>
+                        <div id="w-node-_42461b8c-5387-1a1a-f789-e72f86a24bb2-df8a69b0"><label for="parcelNumber">Parcel Number:</label><input type="number" class="text-field w-input" maxlength="256" name="parcelNumber" data-name="parcelNumber" placeholder="" id="parcelNumber" /></div>
+                      </div>
+                    </div>
                     <div id="w-node-b0aee233-d25d-7cb3-60b4-26a9f0dcda49-df8a69b0"><label for="trackingNumber">Tracking Number:</label><input type="text" class="text-field-2 w-input" maxlength="256" name="trackingNumber" data-name="trackingNumber" placeholder="" id="trackingNumber" /></div>
-                    <div id="w-node-b44db07a-3b4d-110b-be7e-711aa70f2eac-df8a69b0" class="div-block-12"><label for="area">Area:</label><input type="text" class="text-field w-input" maxlength="256" name="area" data-name="area" placeholder="" id="area" /></div>
-                    <div id="w-node-_9a60649c-f66d-220b-a986-7216e0b87033-df8a69b0" class="div-block-5"><label for="parcelNumber">Parcel Number:</label><input type="number" class="text-field w-input" maxlength="256" name="parcelNumber" data-name="parcelNumber" placeholder="" id="parcelNumber" /></div>
                     <div id="w-node-_88d7814f-1c8b-1e04-c2ec-744b7ba21915-df8a69b0"><label for="name">Name:</label><input type="text" class="text-field w-input" maxlength="256" name="name" data-name="name" placeholder="" id="name" /></div>
                     <div id="w-node-_022fa411-81e3-ca52-ddfb-31fd3aa92dfd-df8a69b0"><label for="address">Address:</label><textarea id="address" name="address" maxlength="5000" data-name="field" placeholder="" class="textarea-2 w-input"></textarea></div><input type="submit" value="Submit" data-wait="Please wait..." id="submitButton" class="submit-button-4 w-node-_505bd7f6-25ac-93a6-ede3-c8bb745752a6-df8a69b0 w-button" />
-                    <div id="w-node-_0670d18d-7c2c-c4c0-7855-099bf643d9f8-df8a69b0" class="div-block-5"><label for="dateArrive">Date Arrive:</label><input type="text" class="text-field w-input" maxlength="256" name="dateArrive" data-name="dateArrive" placeholder="" id="dateArrive" /></div>
+                    <div id="loading2" class="div-block-4 w-node-c330d661-f03d-bafd-cec0-6a8da5ae94a0-df8a69b0">
+                      <h4 class="heading-7">Please wait...</h4>
+                    </div>
                   </div>
                   <div class="w-embed"><input type="hidden" id="username" name="username" value="<% name %>">
                     <input type="hidden" id="userID" name="userID" value="<% icNumber %>">
@@ -157,7 +166,7 @@
     <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=61fb4a164eca130338cafeaa" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://uploads-ssl.webflow.com/61fb4a164eca130338cafeaa/js/webflow.6bf708a19.js" type="text/javascript"></script>
     <!--[if lte IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/FaridPuasa/warehouse@31cba4d07b58718b8a1498a0d48ca7638de827d3/public/js/itemin.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/FaridPuasa/warehouse@eb11ca36de66e3950be7d1fc8de79dea856ca36c/public/js/itemin.js"></script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
