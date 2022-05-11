@@ -60,15 +60,15 @@ router.post("/listForOut", (req,res) => {
 
 function addToItemOut(req,res){
     let item = req.body
-    let date = moment().format("DD/MM/YYYY")
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
+    let tomorrow = moment().add(1,"days").format("DD/MM/YYYY")
     let agent = "TEST"
     let tracker = item.trackingNumber
     let filter = {trackingNumber: tracker}
     let update = {
-        status: "SCHEDULE FOR DELIVERY by " + agent + " at " + date,
-        $push: {
-            history:{
-                statusDetail: "SCHDULE FOR DELIVERY" + "[" + req.body.agentName + "]" , 
+            status: "SCHEDULE FOR DELIVERY by " + agent  + " at " + tomorrow, 
+            $push: { history: {
+                statusDetail: "SCHEDULE FOR DELIVERY by " + agent + " at " + tomorrow, 
                 dateUpdated: date,
                 updateBy: req.body.userName, 
                 updateById: req.body.userID, 
@@ -80,15 +80,13 @@ function addToItemOut(req,res){
     let status = req.body.status
     console.log(filter)
     console.log(update)
-    inventories.find(filter,update,(err,result) => {
-        if(err){
-            console.log(err)
-            alert(`Failed to update ${tracker}.`)
-        }else{
-            console.log(result)
+    //console.log(status)
+    inventories.findOneAndUpdate(filter,update,(err,res) => {
+        if(err) return alert(`nada update`)
+        else{
+            alert("Boom")
         }
     })
-    //console.log(status)
     let deliSchedule = new deliScheduleDB({
         trackingNumber: item.trackingNumber,
         parcelNumber: item.parcelNumber,
@@ -115,7 +113,7 @@ function addToItemOut(req,res){
     })
 }
 
-router.post("/schedulelist", (req,res) => {
+router.get("/schedulelist", (req,res) => {
     findScheduleList (req,res)
 })
 
@@ -144,15 +142,25 @@ router.get('/itemoutsss', (req,res) => {
 function getItemOut(req,res){
     inventories.find({},(err,outlist) => {
         res.render('itemout', {
-            itemList: outlist
+            itemList: outlist,
+            name: currentUser.name,
+            icNumber: currentUser.icNumber,
+            position: currentUser.position,
+
         })
     })
 }
 
+router.post('/pout', (req,res) => {
+    addToPod(req,res)
+})
+
 function removedFromSchedule(req,res){
     let item = req.body
-    let tracker = item.trackingNum
-    let filter = {trackingNumber: item.trackingNum}
+    let date = moment().format('DD/MM/YYYY')
+    let tracker = item.trackingNumber
+    console.log(item.trackingNumber)
+    let filter = {trackingNumber: item.trackingNumber}
     let update = {
         status: "IN WAREHOUSE" + "[" +req.body.area + "]",
         $push: {
@@ -165,19 +173,18 @@ function removedFromSchedule(req,res){
             }
         }
     }
-    inventories.find(filter,update,option, (err,result) => {
+    inventories.findOneAndUpdate(filter,update,(err,result) => {
         if(err){
             alert(`Failed to update ${tracker}`)
+            console.log(err)
         }
         else{
-            deliScheduleDB.remove(filter, (err)=> {
+            deliScheduleDB.deleteOne(filter, (err)=> {
                 if(err){
                     alert(`Failed to removed ${tracker}`)
                 }
                 else{
-                    res.render('scheduleList', {
-
-                    })
+                    alert(`sudah add`)
                 }
             })
         }
@@ -185,16 +192,16 @@ function removedFromSchedule(req,res){
 }
 
 function addToPod(req,res){
-    let date = moment().format()
+    let date = moment().format("DD/MM/YYYY")
     let item = req.body
     let tracker = item.trackingNumber
     let agent = item.agentName
-    let filter = {trackingNumber: item.tracker}
+    let filter = {trackingNumber: tracker}
     let update = {
-        status: "OUT FOR DELIVERY at " + date + " by " + agent,
+        status: "OUT FOR DELIVERY by " + agent + " at " + date,
         $push: {
             history: {
-                statusDetail: "OUT FOR DELIVERY at " + date + " by " + agent , 
+                statusDetail: "OUT FOR DELIVERY by " + agent, 
                 dateUpdated: date,
                 updateBy: req.body.userName, 
                 updateById: req.body.userID, 
@@ -202,12 +209,16 @@ function addToPod(req,res){
             }
         }
     }
-    inventories.findOneAndUpdate(filter,update,option, (err,result) => {
-        if(err){
-            alert(`Failed to update ${tracker}.`)
-        }
+    inventories.findOneAndUpdate(filter,update,(err,res) => {
+        if(err) return alert(`nada update`)
         else{
-            alert(`${tracker} has been successfully update.`)
+            deliScheduleDB.deleteOne(filter, (err)=> {
+                console.log(filter)
+                if(err) return alert(`Failed to removed ${tracker}`)
+                else{
+                    alert(`sudah add`)
+                }
+            })
         }
     })
     let podOut = new podOutDB({
@@ -225,10 +236,10 @@ function addToPod(req,res){
     })
     podOut.save((err)=> {
         if(err){
-            alert(`${tracker} this parcel has been added into the list.`)
+           alert(err)
         }
         else{
-            res.render('out')
+            alert(`${tracker} this parcel has been added into the list.`)
         }
     })
 }
@@ -708,6 +719,9 @@ router.get('/itemListHistory/:page', (req,res,next) => {
        
 })
 
+router.post('/editable', (req,res) => {
+
+})
 
 
 router.get('/dispatcher-report', (req,res) => {
@@ -1260,10 +1274,10 @@ function itemin(req,res){
         updateById: req.body.userID, 
         updateByPos: req.body.pos
     }
-    let bin = req.body.area +"/"+req.body.dateEntry
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,
        parcelNumber: req.body.parcelNumber,
+       patientNo: req.body.patientNo,
        name: req.body.name,
        contact: req.body.contact,
        address: req.body.address,
@@ -1273,12 +1287,13 @@ function itemin(req,res){
        product: req.body.formMETHOD,
        value: req.body.value,
        status: "IN WAREHOUSE" + "[" + req.body.area + "]" + " at " + req.body.dateEntry,
-       bin: bin,
        reEntry: "FALSE",
        reason: req.body.reason,
-       remark: req.body.reason,
+       remark: req.body.remark,
+       note: req.body.note,
        attemp: "FALSE",
        reSchedule: req.body.reSchedule,
+       dateArrive: req.body.dateArrive,
        dateEntry: req.body.dateEntry,
        userName: req.body.username,
        userID: req.body.userID,
@@ -1337,24 +1352,32 @@ router.get('pharmacySelf',(req,res) => {
 //Pharmacy In
 function pharmacyIn (req,res){
     let parcelStatus = {statusDetail: "IN MED ROOM"+"["+req.body.area+"]"+ "at " + req.body.dateEntry}
-    let bin = req.body.area +"/"+req.body.dateEntry
     let inventory = new inventories({
-       trackingNumber: req.body.trackingNumber,
-       parcelNumber: req.body.parcelNumber + "[" + req.body.area + "]",
-       name: req.body.name,
-       contact: req.body.contact,
-       address: req.body.address,
-       area: req.body.area,
-       product: req.body.formMETHOD,
-       value: req.body.value,
-       status: "IN MED ROOM" + "[" + req.body.area + "]",
-       bin: bin,
-       reEntry: "FALSE",
-       reason: req.body.reason,
-       remark: req.body.reason,
-       attemp: "FALSE",
-       reSchedule: req.body.reSchedule,
-       dateEntry: req.body.dateEntry,
+        trackingNumber: req.body.trackingNumber,
+        parcelNumber: req.body.parcelNumber,
+        patientNo: req.body.patientNo,
+        name: req.body.name,
+        contact: req.body.contact,
+        address: req.body.address,
+        area: req.body.area,
+        frigde: req.body.fridge,
+        areaIndicator: req.body.areaLoc,
+        task: req.body.taskCB,
+        product: req.body.formMETHOD,
+        value: req.body.value,
+        status: "IN MED ROOM" + "[" + req.body.area + "]" + " at " + req.body.dateEntry,
+        reEntry: "FALSE",
+        reason: req.body.reason,
+        remark: req.body.remark,
+        note: req.body.note,
+        attemp: "FALSE",
+        reSchedule: req.body.reSchedule,
+        dateArrive: req.body.dateArrive,
+        dateEntry: req.body.dateEntry,
+        userName: req.body.username,
+        userID: req.body.userID,
+        userPos: req.body.userPos,
+        count: 0,
     })
     inventory.history.push(parcelStatus)
     inventory.save((err) => {
