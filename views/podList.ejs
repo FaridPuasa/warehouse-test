@@ -175,6 +175,7 @@
                   </td>
                   <td>
                     <span class="tn"><%= pod.trackingNum[i] %></span>
+                    <input type="text" value="<%= pod.trackingNum[i] %>" hidden> 
                   </td>
                   <td>
                     <%= pod.name[i] %>
@@ -194,6 +195,7 @@
                   </td>
                   <td>
                     <span class="taskStatus"></span>
+                    <input type="text" class="taskStatusInput" value=""> 
                   </td>
                 </tr>
                 <% } %>
@@ -398,6 +400,7 @@
               console.log('Headers:', this.getAllResponseHeaders());
               console.log('Body:', this.responseText);
 
+<<<<<<< Updated upstream
               responsejd = this.responseText;
               json_responsejd = JSON.parse(responsejd);
 
@@ -440,6 +443,56 @@
               if (json_responsejd.data[0].job_status == 10) {
                 document.getElementsByClassName("taskStatus")[i].innerText = "Deleted";
               }
+=======
+            if (json_responsejd.data[0].job_status == 0) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Assigned";
+              document.getElementsByClassName("taskStatusInput")[i].value = "ASSIGNED";
+            }
+
+            if (json_responsejd.data[0].job_status == 1) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Started";
+              document.getElementsByClassName("taskStatusInput")[i].value = "STARTED";
+            }
+
+            if (json_responsejd.data[0].job_status == 2) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Successful";
+              document.getElementsByClassName("taskStatusInput")[i].value = "SUCCESSFUL";
+            }
+
+            if (json_responsejd.data[0].job_status == 3) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Failed";
+              document.getElementsByClassName("taskStatusInput")[i].value = "FAILED";
+            }
+
+            if (json_responsejd.data[0].job_status == 4) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "InProgress/Arrived";
+              document.getElementsByClassName("taskStatusInput")[i].value = "IN-PROGRESS/ARRIVED";
+            }
+
+            if (json_responsejd.data[0].job_status == 6) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Unassigned";
+              document.getElementsByClassName("taskStatusInput")[i].value = "UNASSIGNED";
+            }
+
+            if (json_responsejd.data[0].job_status == 7) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Accepted/Acknowledged";
+              document.getElementsByClassName("taskStatusInput")[i].value = "ACCEPTED/ACKNOWLEDGED";
+            }
+
+            if (json_responsejd.data[0].job_status == 8) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Decline";
+              document.getElementsByClassName("taskStatusInput")[i].value = "DECLINE";
+            }
+
+            if (json_responsejd.data[0].job_status == 9) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Cancel";
+              document.getElementsByClassName("taskStatusInput")[i].value = "CANCEL";
+            }
+
+            if (json_responsejd.data[0].job_status == 10) {
+              document.getElementsByClassName("taskStatus")[i].innerText = "Deleted";
+              document.getElementsByClassName("taskStatusInput")[i].value = "DELETED";
+>>>>>>> Stashed changes
             }
           };
 
