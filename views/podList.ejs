@@ -400,54 +400,48 @@
               console.log('Headers:', this.getAllResponseHeaders());
               console.log('Body:', this.responseText);
 
-            if (json_responsejd.data[0].job_status == 0) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Assigned";
-              document.getElementsByClassName("taskStatusInput")[i].value = "ASSIGNED";
-            }
+              responsejd = this.responseText;
+              json_responsejd = JSON.parse(responsejd);
 
-            if (json_responsejd.data[0].job_status == 1) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Started";
-              document.getElementsByClassName("taskStatusInput")[i].value = "STARTED";
-            }
+              if (json_responsejd.data[0].job_status == 0) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Assigned";
+              }
 
-            if (json_responsejd.data[0].job_status == 2) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Successful";
-              document.getElementsByClassName("taskStatusInput")[i].value = "SUCCESSFUL";
-            }
+              if (json_responsejd.data[0].job_status == 1) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Started";
+              }
 
-            if (json_responsejd.data[0].job_status == 3) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Failed";
-              document.getElementsByClassName("taskStatusInput")[i].value = "FAILED";
-            }
+              if (json_responsejd.data[0].job_status == 2) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Successful";
+              }
 
-            if (json_responsejd.data[0].job_status == 4) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "InProgress/Arrived";
-              document.getElementsByClassName("taskStatusInput")[i].value = "IN-PROGRESS/ARRIVED";
-            }
+              if (json_responsejd.data[0].job_status == 3) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Failed";
+              }
 
-            if (json_responsejd.data[0].job_status == 6) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Unassigned";
-              document.getElementsByClassName("taskStatusInput")[i].value = "UNASSIGNED";
-            }
+              if (json_responsejd.data[0].job_status == 4) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "InProgress/Arrived";
+              }
 
-            if (json_responsejd.data[0].job_status == 7) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Accepted/Acknowledged";
-              document.getElementsByClassName("taskStatusInput")[i].value = "ACCEPTED/ACKNOWLEDGED";
-            }
+              if (json_responsejd.data[0].job_status == 6) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Unassigned";
+              }
 
-            if (json_responsejd.data[0].job_status == 8) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Decline";
-              document.getElementsByClassName("taskStatusInput")[i].value = "DECLINE";
-            }
+              if (json_responsejd.data[0].job_status == 7) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Accepted/Acknowledged";
+              }
 
-            if (json_responsejd.data[0].job_status == 9) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Cancel";
-              document.getElementsByClassName("taskStatusInput")[i].value = "CANCEL";
-            }
+              if (json_responsejd.data[0].job_status == 8) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Decline";
+              }
 
-            if (json_responsejd.data[0].job_status == 10) {
-              document.getElementsByClassName("taskStatus")[i].innerText = "Deleted";
-              document.getElementsByClassName("taskStatusInput")[i].value = "DELETED";
+              if (json_responsejd.data[0].job_status == 9) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Cancel";
+              }
+
+              if (json_responsejd.data[0].job_status == 10) {
+                document.getElementsByClassName("taskStatus")[i].innerText = "Deleted";
+              }
             }
           };
 
