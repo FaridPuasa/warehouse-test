@@ -10,12 +10,16 @@ const http = require('http')
 let server = http.createServer(app)
 let io = socketIO(server)
 
+//Session setup
 app.use(session({
     secret: 'Unknown Value',
     cookie: {maxAge: 2000},
     saveUninitialized: false,
-    resave: false
+    resave: true
 }))
+
+
+
 app.use(express.urlencoded({extended:true}))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))

@@ -25,7 +25,117 @@ const delischedule = require('../models/delischedule');
 
 let currentUser = {}
 
-//exporting data from mongo to csv
+//get list by product
+router.get('/list/:product/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let product = req.params.product.toUpperCase()
+    inventories
+        .find({product: product})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemList1', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+//get podlist by area
+router.get('/podlist/:area', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    
+    podDB
+        .find({ podArea: area })
+        .sort({entryDate: -1})
+        .exec(function(err, pod) {
+            inventories.count({}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('podList', {
+                    podList: pod,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+//get podlist by area
+router.get('/podlist/:name', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let name = req.params.agentName.toUpperCase()
+    
+    podDB
+        .find({ podAssign: name })
+        .sort({entryDate: -1})
+        .exec(function(err, pod) {
+            inventories.count({}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('podList', {
+                    podList: pod,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+//get podlist by area
+router.get('/podlist/:date', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let date = moment(req.params.date).format('DD/MM/YYYY')
+    
+    podDB
+        .find({ podDate: date })
+        .sort({entryDate: -1})
+        .exec(function(err, pod) {
+            inventories.count({}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('podList', {
+                    podList: pod,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/logout', (req, res, next) => {
+    req.session.destroy(function (err) {
+      if (err) {
+        console.error("--> session destroy failed.err -> ", err);
+      }
+    });
+    res.redirect("/login");
+});
 
 router.get("/cs", (req,res)=>{
     inventories.find({}, function(err,inventory){
@@ -35,17 +145,6 @@ router.get("/cs", (req,res)=>{
         })
     })
 })
-
-router.get('/datey', (req,res) => {
-    res.render('testdate')
-})
-
-router.post('/date', (req,res) => {
-    let date = moment(req.body.startDate).format('DD/MM/YYYY')
-    console.log(req.body.startDate)
-    console.log(date)
-})
-
 
 router.get('/outlist/:page/:limit', (req,res,next) => {
     var limit = req.params.limit || 10
@@ -76,7 +175,6 @@ router.get('/outlist/:page/:limit', (req,res,next) => {
 router.get('/schedulelist/:page/:limit', (req,res,next) => {
     var limit = req.params.limit || 10
     var page = req.params.page || 1
-
     delischedule
         .find({})
         .sort({entryDate: -1})
@@ -98,7 +196,10 @@ router.get('/schedulelist/:page/:limit', (req,res,next) => {
             })
         })
 })
+
+
 /*************************************************************** VERSION 2 ************************************************************************** */
+
 router.post("/outlist/:page/:limit", (req,res) => {
     addToItemOut(req,res)
 })
@@ -163,7 +264,7 @@ router.get("/schedulelist", (req,res) => {
     findScheduleList (req,res)
 })
 
-/*
+
 function findScheduleList (req,res){
     let agent = req.body.agentName
     let date = req.body.dateSchedule
@@ -180,7 +281,7 @@ function findScheduleList (req,res){
             alert(`No List available`)
         }
     })
-}*/
+}
 
 router.get('/itemoutsss', (req,res) => {
     getItemOut(req,res)
@@ -322,80 +423,6 @@ function searchEngine(req,res){
         })
 }
 
-function csvExport(req,res) {
-    let dateStart = req.body.dateStart
-    let dateEnd = req.body.dateEnd
-
-    const transformer = (doc)=> {
-        return {
-            trackingNumber: doc.trackingNumber,
-            parcelNumber: doc.parcelNumber,
-            name: doc.name,
-            contact: doc.contact,
-            address: doc.address,
-            area: doc.area,
-            areaIndicator: doc.areaIndicator,
-            product: doc.product,
-            value: doc.value,
-            reEntry: doc.reEntry,
-            attemp: doc.attemp,
-            count: doc.count,
-            dateEntry: doc.dateEntry,
-            entryDate: doc.entryDate,
-            expireDate:doc.expireDate,
-            status: doc.status,
-            userName: doc.userName,
-            userPos: doc.userPos,
-        };
-    }
-
-    const filename = 'export.csv';
-    const cursor = inventories.find()
-
-    res.setHeader('Content-disposition', `attachment; filename=${filename}`);
-    res.writeHead(200, { 'Content-Type': 'text/csv' });
-    res.flushHeaders();
-    var csvStream = fastCsv.format({headers: true}).transform(transformer)
-    cursor.stream().pipe(csvStream).pipe(res);
-}
-
-
-router.get('/acess/zalora', (req,res)=> {
-    inventories.find({}, function(err,inventory){
-        res.render('zalora', {
-            itemList: inventory,
-            moment: moment
-        })
-    })
-})
-
-//test for checkbox
-router.get("/testing", (req,res) => {
-    res.render("tester")
-})
-
-router.post("/testcomplete", (req,res) => {
-    let testCB = req.body.selected
-    if (testCB == "true"){
-        testCB = true
-        console.log(req.body.trackingNum)
-        console.log("the box is check and true")
-        res.render("testcomplete", {
-            testCB: testCB,
-        })
-    }
-    else if (testCB == undefined){
-        testCB = false
-        console.log(testCB)
-        console.log("the box is uncheck and false")
-        res.render("testcomplete", {
-            testCB: testCB,
-        })
-    }
-    console.log(req.body.testCB)
-})
-
-
 /*************************** USER *********************************/
 
 router.get('/user', (req,res) => {
@@ -431,10 +458,6 @@ router.post('/changesuccess', (req,res) => {
     firstTimeLogin(req,res)
 })
 
-router.get('/poddispatcher', (req,res) => {
-    res.render('podDispatch')
-})
-
 router.get('/logout', (req,res) => {
     req.session.destroy()
     let time = moment().format()
@@ -442,59 +465,6 @@ router.get('/logout', (req,res) => {
         time: time,
     })
 })
-
-function userEditable(req,res){
-    let body = req.body
-    let filter = {icNumber: body.icNumber}
-    let update = {position: body.position, email: body.email, contact: body.contact, office: body.office, create: body.create, update: body.update, delete: body.delete}
-    let option = {upsert: true, new: true}
-    userDB.findOneAndUpdate(filter,update,option, (err,result) => {
-        if (err){
-            console.log(err)
-            res.render('error', {
-                code: '11000',
-                head:'Invalid Entry',
-                message:'User IC-Number / Social Security Number already in Database'
-            })
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    code: '11000',
-                    head:'Invalid Entry',
-                    message:'User IC-Number / Social Security Number already in Database'
-                })
-            }
-        }else {
-            console.log("Update Success")
-        }
-    })
-}
-
-function userAttendance(req,res){
-    let dateTime = moment().format("DD/MM/YYYY")
-    let body = req.body
-    let filter = {icNumber: body.icNumber}
-    let update = {$push: {attendance:{clockIn: dateTime, clockOut: dateTime}}}
-    let option = {upsert: true, new: true}
-    userDB.findOneAndUpdate(filter,update,option, (err,result) => {
-        if (err){
-            console.log(err)
-            res.render('error', {
-                error_code: 'Error Code: 10',
-                head:'Invalid Entry',
-                message:'User IC-Number / Social Security Number already in Database'
-            })
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    error_code: '11000',
-                    head:'Invalid Entry',
-                    message:'User IC-Number / Social Security Number already in Database'
-                })
-            }
-        }else {
-            console.log("Update Success")
-        }
-    })
-}
 
 function user(req,res) {
     let body = req.body
@@ -750,49 +720,6 @@ router.get('/list/:page/:limit', (req,res,next) => {
         })
 })
 
-router.get('/itemListHistory/:page', (req,res,next) => {
-    var perPage = 10
-    var page = req.params.page || 1
-
-    inventories
-        .find({})
-        .skip((perPage * page) - perPage)
-        .limit(perPage)
-        .exec(function(err, inventory) {
-            inventories.count().exec(function(err, count) {
-                if (err) return next(err)
-                res.render('teslist', {
-                    itemList: inventory,
-                    current: page,
-                    pages: Math.ceil(count / perPage)
-                })
-            })
-        })
-       
-})
-
-router.post('/editable', (req,res) => {
-
-})
-
-
-router.get('/dispatcher-report', (req,res) => {
-    dispatchDB.find({}, function(err,dispatch) {
-        res.render('dispatchreport', {
-            dispatch: dispatch,
-        })
-    })
-})
-
-/*router.get('/',(req,res) => {
-    inventories.find({}, function(err,inventory){
-        res.render('test', {
-            itemList: inventory,
-            moment: moment
-        })
-    })
-})*/
-
 //Zalora In
 router.get('/itemin', (req,res) => {
     res.render('itemin', {
@@ -840,14 +767,6 @@ router.get('/podList', (req,res) => {
     })
 })
 
-router.get('/personalPod', (req,res) => {
-    podDB.find({}, (err,pod) => {
-        res.render('podListPvt', {
-            podList: pod,
-        })
-    })
-})
-
 //Zalora Re-Entry
 router.get('/reentry', (req,res) => {
     res.render('reEntry', {
@@ -861,18 +780,6 @@ router.post('/reentryConfirm', (req,res) =>{
     reEntry(req,res)
 })
 
-//Zalora Dispatcher Report
-router.get('/dispatch',(req,res) => {
-    res.render('dispatch', {
-        name: currentUser.name,
-        icNumber: currentUser.icNumber,
-        position: currentUser.position,
-    })
-})
-
-router.post('/dispatchSuccess', (req,res) => {
-    dispatcherRecord(req,res)
-})
 
 //Zalora Export Return
 router.get('/return', (req,res) => {
@@ -889,26 +796,6 @@ router.get('/return', (req,res) => {
         })
     })
    
-})
-
-router.get('/return', (req,res) => {
-    let zaloraList = []
-    inventories.find({} , (err,inventory) => {
-        inventory.forEach(function(inventory){
-            zaloraList.push(inventory)
-        })
-        res.render('return',{
-            zalora: zaloraList,
-            name: currentUser.name,
-            icNumber: currentUser.icNumber,
-            position: currentUser.position,
-        })
-    })
-   
-})
-
-router.post('/edit', (req,res) => {
-    console.log(req.body.trackingNum)
 })
 
 router.post('/success', (req,res) => {
@@ -1033,61 +920,6 @@ function exportReturn(req,res){
     })
 }
 
-//This is use for dispatcher to check their POD
-function dispatcherPod(req,res){
-    let body = req.body
-    let date = moment().format("DD/MM/YYYY")
-    let tracker = body.trackingNum
-    let update = {status: "COMPLETED" + " at " + date, $push: {history: {statusDetail: "COMPLETED", dateUpdated: date,}}}
-    let option = {upsert: true, new: true}
-    for (i = 0; i< tracker.length; i++){
-        let filter = {trackingNumber: tracker[i], task: true}
-        inventories.findOneAndUpdate(filter, update, option)
-    }
-}
-
-//This is use for end of day report
-function dispatcherRecord(req,res){
-    let dispatch = req.body
-    let date = moment().format("DD/MM/YYYY")
-    let ref = "GR/Dispatch/" + dispatch.name + date
-    let dispatcher = new dispatchDB({
-        ref: ref,//Auto generate
-        name: dispatch.name,
-        userID: dispatch.userID,
-        carNumber: dispatch.car,
-        given: dispatch.parcel, //Total Number of parcel given
-        unattempted: dispatch.unattempt,
-        success: dispatch.success, //Total Number of parcel success
-        selfCollect: dispatch.selfCollect, //Total Number of parcel changed to selfcollect
-        failed: dispatch.failed, //Total Number of parcel failed
-        reSchedule: dispatch.reSchedule, //Total Number of parcel re-schedule
-        cancel: dispatch.cancel, //Total Number of parcel cancel
-        pickup: dispatch.pickup, //Radio yes or no
-        pickupVal: dispatch.pickupValue, //Total amount of pickup
-        pickupTN: dispatch.pickupTN, //Textarea
-        return: dispatch.return, //radio yes or no
-        returnVal: dispatch.returnValue, //total number of return parcel
-        returnTN: dispatch.returnN, //Textarea
-        totalCollected: dispatch.collection, //Amount of cash collected
-        dateSubmit: dispatch.dateSubmit,
-    })
-    dispatcher.save((err) => {
-        if (err){
-            res.render('error', {
-                code: 'Mongo = 11000',
-                head:'Invalid Entry',
-                message:'Tracking Number already exist within the database', 
-                solution: 'Retry submitting the form again. If persist please contact RDI ext 877'
-            })
-        }else {
-            res.render ('success', {
-                head: "Task Assigned",
-                message: `Task successfully assigned to ${s}.`,
-            })
-        }
-    })
-}
 
 //reEntry parcels >>>>>>>>> ADD USER <<<<<<<<<<<<
 function reEntry(req,res){
@@ -1221,24 +1053,6 @@ router.get("/test", (req,res) => {
     })
 })
 
-function editableList(req,res){
-    let body = req.body
-    let filter = {trackingNumber: req.body.trackingNumber}
-    let update = {name: req.body.name, address: req.body.address, contact: req.body.contact,}
-    let option = {upsert: true, new: true}
-    inventories.findOneAndUpdate(filter,update,option,(err,docs) => {
-        if(err){
-            console.log(err)
-            alert("Error to update Database!. Please contact ext 877")
-        } 
-        else {
-            console.log('update success')
-            alert("Update sucess!")
-           //let date = req.body.dateSchedule 
-        }
-    })
-}
-
 //POD access by warehouse supervisor and transport controller
 function pod(req,res){
     let body = req.body
@@ -1252,7 +1066,7 @@ function pod(req,res){
             status: "SCHEDULED FOR DELIVERY" + " at " + body.dateAssign, 
             $push: {
                 history: {
-                    statusDetail: "SCHEDULED FOR DELIVERY", 
+                    statusDetail: "SCHEDULED FOR DELIVERY" + body.dateAssign, 
                     dateUpdated: date,
                     updateBy: req.body.username, 
                     updateById: req.body.userID, 
@@ -1368,9 +1182,6 @@ function itemin(req,res){
     })
 }
 
-function selfCollect(req,res){
-    
-}
 /*************************** ZALORA *********************************/
 
 /*************************** PHARMACY *********************************/
@@ -1382,28 +1193,15 @@ router.get('/pharmacyin',(req,res) => {
     })
 })
 
-router.post("/pharmacyin",(req,res) => {
-    pharmacyIn(req,res)
-})
-
-router.get('/pharmacyout',(req,res) => {
-    res.render('comingsoon', {
-        head: "Page in development",
-        message: "Coming Soon"
-    })
-})
-
-router.get('pharmacySelf',(req,res) => {
-    res.render('pharmacyself')
-})
-
-router.get('pharmacySelf',(req,res) => {
-    pharmaSelfCollect(req,res)
-})
-
 //Pharmacy In
 function pharmacyIn (req,res){
-    let parcelStatus = {statusDetail: "IN MED ROOM"+"["+req.body.area+"]"+ "at " + req.body.dateEntry}
+    let parcelStatus = {
+        statusDetail: "IN MED ROOM" + "[" +req.body.area + "]", 
+        dateUpdated: date,
+        updateBy: req.body.username, 
+        updateById: req.body.userID, 
+        updateByPos: req.body.userPos
+    }
     let inventory = new inventories({
         trackingNumber: req.body.trackingNumber,
         parcelNumber: req.body.parcelNumber,
@@ -1447,112 +1245,56 @@ function pharmacyIn (req,res){
     })
 }
 
-//Self Collect Pharmacy
-function pharmaSelfCollect(req,res){
-    let date = moment().format("DD/MM/YYYY");
-    let filter = {trackingNumber: req.body.trackingNumber}
-    let update = {status: "SELF COLLECTED" + " at " + date}
-    let history = {history: {statusDetail: "SELF COLLECTED" + " at " + date}}
-    let option = {upsert: true, new: true}
-    console.log(req.body.trackingNumber)
-    inventories.findOneAndUpdate(filter,{$push: history}, option)
-    inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
-        if(err){
-            console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
-        } 
-        else{
-            console.log(docs)
-            res.render('success', {
-                head: `successfully update the warehouse management system`,
-                message: `Item collected at ${date}`
-            })
-        } 
+//GRP BN
+function grpBN (req,res){
+    let parcelStatus = {
+        statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]", 
+        dateUpdated: date,
+        updateBy: req.body.username, 
+        updateById: req.body.userID, 
+        updateByPos: req.body.userPos
+    }
+    let inventory = new inventories({
+        trackingNumber: req.body.trackingNumber,
+        parcelNumber: req.body.parcelNumber,
+        patientNo: req.body.patientNo,
+        name: req.body.name,
+        contact: req.body.contact,
+        address: req.body.address,
+        area: req.body.area,
+        frigde: req.body.fridge,
+        areaIndicator: req.body.areaLoc,
+        task: req.body.taskCB,
+        product: req.body.formMETHOD,
+        value: req.body.value,
+        status: "IN WAREHOUSE" + "[" + req.body.area + "]" + " at " + req.body.dateEntry,
+        reEntry: "FALSE",
+        reason: req.body.reason,
+        remark: req.body.remark,
+        note: req.body.note,
+        attemp: "FALSE",
+        reSchedule: req.body.reSchedule,
+        dateArrive: req.body.dateArrive,
+        dateEntry: req.body.dateEntry,
+        userName: req.body.username,
+        userID: req.body.userID,
+        userPos: req.body.userPos,
+        count: 0,
     })
-}
-
-/*************************** PHARMACY *********************************/
-
-/*************************** GO RUSH MALAYSIA *********************************/
-router.get('/grpmy',(req,res) => {
-    res.render('comingsoon', {
-        head: "Page in development",
-        message: "Coming Soon"
-    })
-})
-
-
-//Chances of Tookan to push accurately....?
-//Does Tookan able to push to Mongo???
-//Does DHL Require to Download???
-
-//After DHL Pickup
-function iteminMy(req,res){
-    let date = moment().format("DD/MM/YYYY")
-    let parcelStatus = "IN WAREHOUSE[MY]" + " at " + date
-    let body = req.body
-    let myInventory = new myInventoryDB ({
-        trackingNumber: body.trackingNumber,
-        name: body.name,
-        address: body.address,
-        contact: body.contact,
-        value: body.value,
-        stasus: "IN WAREHOUSE[MY]",
-        product: body.formMETHOD,
-        tag: body.tag,
-        dateArrive: body.dateArrive,
-    }) 
-    myInventory.history.push(parcelStatus)
-    myInventory.save((err) => {
+    inventory.history.push(parcelStatus)
+    inventory.save((err) => {
         if (err) {
             if (err.name === 'MongoError' && err.code === 11000){
                 res.render('error', {
-                    error_code: '11000',
+                    code: 'Mongo = 11000',
                     head:'Invalid Entry',
                     message:'Tracking Number already exist within the database'
                 })
             }
         }else {
-            res.redirect ('myin')
+            res.redirect ('pharmain')
         }
     })
 }
-
-//Item Out for Transit to BN
-function manifest(req,res){
-    //let date = moment().format()
-    //let parcelStatus = "IN TRANSIT TO BN" + " | " + date
-    //let history = {history: {statusDetail: "SELF COLLECTED" + " | " + date}}
-    let manifestList = []
-    myInventoryDB.find({}, (err,results) => {
-        results.forEach((result) => {
-            if(result.something == "something"){
-                myInventoryDB.push(result)
-            }
-        })
-    })
-}
-
-
-/*************************** GO RUSH MALAYSIA *********************************/
-
-router.get('/tracking',(req,res) => {
-    res.render('comingsoon', {
-        head: "Page in development",
-        message: "Coming Soon"
-    })
-})
-
-router.get('/central',(req,res) => {
-    res.render('comingsoon', {
-        head: "Page in development",
-        message: "Coming Soon"
-    })
-})
 
 module.exports = router;

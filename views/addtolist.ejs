@@ -105,10 +105,22 @@
               <li><a href="/outlist/<%=pages%>/75">75</a></li>
               <li><a href="/outlist/<%=pages%>/100">100</a></li>
             </ul>
-            if (<%= limit %> > <%= total %>){
-              <p><%= total %> of <% total %></p>
-            }else if (<%= limit %>  )
-            <%=limit%> of <%= total %>
+
+            <% if(pages > 0){%>
+                <% if (current == 1) { %>
+                      <%= limit %> of <%= total %>
+                  <% } else{ %>
+                      <% if (current > pages && total > limit) { %>
+                          <%= limit * current %> of <%= total %>
+
+                      <% } else { %>
+                        <%= total - (limit * current) %> of <%= total %>
+                      <% } %>
+
+                  <% } %>
+              <% } %>
+                  
+ 
         </div>
         <div id="w-node-d754e2f5-aed1-3892-5daf-5f26d402a898-e0507387" class="html-embed w-embed tableFixHead">
           <table id="myTable" class="table table-striped table-hover">
