@@ -1,8 +1,5 @@
 //const user = require("../models/user")
 
-
-
-
 //Pharmacy Out
 function pharmacyOut (req,res){
 let date = moment().format()
