@@ -102,7 +102,7 @@ router.get('/podlist/:name', (req,res,next)=>{
         })
 })
 
-//get podlist by area
+//get podlist by date
 router.get('/podlist/:date', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
@@ -126,6 +126,10 @@ router.get('/podlist/:date', (req,res,next)=>{
                 })
             })
         })
+})
+
+router.get('/', (req,res,next)=>{
+    
 })
 
 router.get('/logout', (req, res, next) => {
