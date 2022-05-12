@@ -3,7 +3,12 @@ const app = express()
 const session = require('express-session')
 const routes = require('./routes/app');
 const bodyParser = require('body-parser')
+const socketIO = require('socket.io')
+const http = require('http')
 
+//Server setup
+let server = http.createServer(app)
+let io = socketIO(server)
 
 app.use(session({
     secret: 'Unknown Value',
@@ -28,7 +33,10 @@ mongoose.connect(db, {
 
 app.use('/', routes)
 
+io.on('connection', (socket) => {
+    console.log(`User connected!`)
+})
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, console.log(`Server start on ${PORT}`))
+server.listen(PORT, console.log(`Server start on ${PORT}`))
 //update

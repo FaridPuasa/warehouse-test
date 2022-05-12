@@ -21,6 +21,7 @@ const { findOne, findOneAndUpdate, listenerCount } = require('../models/inventor
 const { render } = require('ejs');
 const { request } = require('express');
 const res = require('express/lib/response');
+const delischedule = require('../models/delischedule');
 
 let currentUser = {}
 
@@ -45,20 +46,64 @@ router.post('/date', (req,res) => {
     console.log(date)
 })
 
-router.get('/outlist', (req,res) => {
-    inventories.find({}, function(err,inventory){
-        res.render('Listtoschedule', {
-            itemList: inventory,
-            moment: moment
+
+router.get('/outlist/:page/:limit', (req,res,next) => {
+    var limit = req.params.limit || 10
+    var page = req.params.page || 1
+
+    inventories
+        .find({})
+        .sort({entryDate: -1})
+        .skip((limit * page) - limit)
+        .limit(limit)
+        .exec(function(err, inventory) {
+            inventories.count({}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('addtolist', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
         })
-    })
+})
+
+router.get('/schedulelist/:page/:limit', (req,res,next) => {
+    var limit = req.params.limit || 10
+    var page = req.params.page || 1
+
+    delischedule
+        .find({})
+        .sort({entryDate: -1})
+        .skip((limit * page) - limit)
+        .limit(limit)
+        .exec(function(err, inventory) {
+            delischedule.count({}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('addtolist', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
 })
 /*************************************************************** VERSION 2 ************************************************************************** */
-router.post("/listForOut", (req,res) => {
+router.post("/outlist/:page/:limit", (req,res) => {
     addToItemOut(req,res)
 })
 
-function addToItemOut(req,res){
+function addToItemOut(req,res,next){
     let item = req.body
     let date = moment().format("DD/MM/YYYY, h:mm:ss a")
     let tomorrow = moment().add(1,"days").format("DD/MM/YYYY")
@@ -79,14 +124,7 @@ function addToItemOut(req,res){
     //let option = {upsert: true, new: true}
     let status = req.body.status
     console.log(filter)
-    console.log(update)
     //console.log(status)
-    inventories.findOneAndUpdate(filter,update,(err,res) => {
-        if(err) return alert(`nada update`)
-        else{
-            alert("Boom")
-        }
-    })
     let deliSchedule = new deliScheduleDB({
         trackingNumber: item.trackingNumber,
         parcelNumber: item.parcelNumber,
@@ -108,7 +146,15 @@ function addToItemOut(req,res){
             `)
         }
         else{
-            alert(`${tracker} has been schedule for delivery at ${date} to ${agent}.`)
+            inventories.findOneAndUpdate(filter,update,(err,result) => {
+                if(err) return console.log (err)
+                else{
+                    alert(`${tracker} has been schedule for delivery at ${date} to ${agent}.`)
+                    res.status(204).send()
+                    res.end()
+                }
+            })
+            //alert(`${tracker} has been schedule for delivery at ${date} to ${agent}.`)
         }
     })
 }
@@ -117,6 +163,7 @@ router.get("/schedulelist", (req,res) => {
     findScheduleList (req,res)
 })
 
+/*
 function findScheduleList (req,res){
     let agent = req.body.agentName
     let date = req.body.dateSchedule
@@ -133,7 +180,7 @@ function findScheduleList (req,res){
             alert(`No List available`)
         }
     })
-}
+}*/
 
 router.get('/itemoutsss', (req,res) => {
     getItemOut(req,res)

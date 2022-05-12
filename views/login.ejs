@@ -48,6 +48,14 @@
     </div>
 </body>
 
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    let socket = io()
+    socket.on('connect', ()=>{
+        console.log(`Coonected with server`);
+    })
+</script>
+
 <script src="js/phonecode.js"></script>
 <!-- Bootstrap core JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
