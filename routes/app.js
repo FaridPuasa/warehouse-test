@@ -25,6 +25,31 @@ const delischedule = require('../models/delischedule');
 
 let currentUser = {}
 
+router.get('/tookout', (req,res)=>{
+    console.log(req.body.trackingNumber)
+    res.render('pew')
+})
+
+router.post('/tookan', (req,res)=>{
+    var request = require('request');
+    let tracker = req.body.trackingNumber
+    console.log(req.body.trackingNumber)
+    request({
+      method: 'POST',
+      url: 'https://api.tookanapp.com/v2/get_job_details',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: `{  \"api_key\": \"51676580f24b091114132d38111925401ee4c2f328d978375e1f03\",  \"job_ids\": [${tracker}],  \"include_task_history\": 0}`
+    }, function (error, response, body) {
+      console.log('Status:', response.statusCode);
+      console.log('Headers:', JSON.stringify(response.headers));
+      console.log('Response:', body);
+
+    });
+
+})
+
 router.get('/podlistfi', (req,res) => {
     podDB.find({}, (err,pod) => {
         res.render('podList', {
@@ -210,7 +235,7 @@ router.get('/schedulelist/:page/:limit', (req,res,next) => {
 })
 
 
-/*************************************************************** VERSION 2 ************************************************************************** */
+/*************************************************************** VERSION 2 ***************************************************************************/
 
 router.post("/outlist/:page/:limit", (req,res) => {
     addToItemOut(req,res)
@@ -1017,7 +1042,7 @@ function reEntry(req,res){
 //Item out into staging area
 function itemOut(req,res){
     let status = {status: req.body.status}
-    let date = moment().format("DD/MM/YYYY")
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
     let tracker = {trackingNumber: req.body.trackingNum}
     let update = {
         status: "SCHEDULE FOR DELIVERY " + " to " + req.body.agentName + " at " + date, 
