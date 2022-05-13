@@ -25,6 +25,14 @@ const delischedule = require('../models/delischedule');
 
 let currentUser = {}
 
+router.get('/podlistfi', (req,res) => {
+    podDB.find({}, (err,pod) => {
+        res.render('podList', {
+            podList: pod,
+        })
+    })
+})
+
 //get list by product
 router.get('/list/:product/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
@@ -162,7 +170,7 @@ router.get('/outlist/:page/:limit', (req,res,next) => {
         .exec(function(err, inventory) {
             inventories.count({}).exec(function(err, count) {
                 if (err) return next(err)
-                res.render('addtolist', {
+                res.render('addtooutlist', {
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -187,7 +195,7 @@ router.get('/schedulelist/:page/:limit', (req,res,next) => {
         .exec(function(err, inventory) {
             delischedule.count({}).exec(function(err, count) {
                 if (err) return next(err)
-                res.render('addtolist', {
+                res.render('addtopod', {
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -208,6 +216,7 @@ router.post("/outlist/:page/:limit", (req,res) => {
     addToItemOut(req,res)
 })
 
+//Add to item out for warehouse to locate the parcel [Sowdeq --> Warehouse]
 function addToItemOut(req,res,next){
     let item = req.body
     let date = moment().format("DD/MM/YYYY, h:mm:ss a")
@@ -307,6 +316,7 @@ router.post('/pout', (req,res) => {
     addToPod(req,res)
 })
 
+//If removed from outlist and pod
 function removedFromSchedule(req,res){
     let item = req.body
     let date = moment().format('DD/MM/YYYY')
@@ -343,6 +353,7 @@ function removedFromSchedule(req,res){
     })
 }
 
+//Add to POD for TC to create pod [Warehouse --> Sowdeq]
 function addToPod(req,res){
     let date = moment().format("DD/MM/YYYY")
     let item = req.body
@@ -637,7 +648,24 @@ function login(req,res){
                             })
                         })  
                     }
-                    else if (position == "FIN"){res.render('')}
+                    else if (position == "FIN"){
+                        inventories.find({}, (err,zaloraInventory) => {
+                        podDB.find({}, (err,pod) =>{
+                            dispatchDB.find({}, (err,dispatch) => {
+                                res.render('dashboardfi', {
+                                    itemList: zaloraInventory,
+                                    dispatch: dispatch,
+                                    podList: pod,
+                                    name: user.name,
+                                    icNumber: user.icNumber,
+                                    position: user.position,
+                                    contact: user.contact,
+                                            office: user.office
+                                        })
+                                    })
+                                })
+                            })
+                        }
                     else {res.render('error',{
                         code: 'Error Code: 1', //access control error
                         head:'Invalid Access',
