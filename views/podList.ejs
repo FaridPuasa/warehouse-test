@@ -195,7 +195,7 @@
                   </td>
                   <td>
                     <span class="taskStatus"></span>
-                    <input type="text" class="taskStatusInput" value=""> 
+                    <input type="text" class="taskStatusInput" value="" hidden> 
                   </td>
                 </tr>
                 <% } %>
@@ -386,10 +386,11 @@
 
       function showTaskStatus() {
         let countPODtasks = document.getElementsByClassName("tn").length;
-
+        
         for (let i = 0; i < countPODtasks; i++) {
           var itemTN = document.getElementsByClassName("tn")[i].innerText;
-
+          console.log(itemTN)
+          
           var request = new XMLHttpRequest();
           request.open('POST', 'https://api.tookanapp.com/v2/get_job_details');
           request.setRequestHeader('Content-Type', 'application/json');
