@@ -249,8 +249,22 @@
                 <td><span><%= inventory.address %></span></td>
                 <td class="itemStatus"><span><%= inventory.status %></span></td>
                 <td><span><%= inventory.note %></span></td>
-                <td class="expire"><span><%= inventory.expireDate %></span></td>
-                <td class="days"><span><%= inventory.age %></span></td>
+                <td class="expire"><span><%= moment(inventory.expireDate).format("DD/MM/YYYY, h:mm:ss a") %></span></td>
+                <td><span id="days<%=index%>">
+                  <% function dateDiff() { 
+                      let todate = Date.parse(moment().format())
+                      let expire = Date.parse(inventory.expireDate)
+                      let days = Math.round((expire - todate) / (60 * 60 * 24 * 1000))
+                      if (days <= 0){
+                        days = "Expired Task"
+                      }
+                      else{
+                        days = days + " Days"
+                      }
+                      return days
+                    }
+                  %>
+                <%= dateDiff() %></span></td>
                 <td>
                   <button type="button" class="btn btn-info p-1" data-toggle="modal" data-target="#editModal<%= index %>">
                     <i class="far fa-edit"></i>

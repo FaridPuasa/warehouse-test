@@ -1,0 +1,53 @@
+
+<table>
+    <thead>
+        <tr>
+            <th scope="col">No.</th>
+            <th scope="col">ITEM WITH ME</th>
+            <th scope="col">TASK ID</th>
+            <th scope="col">NAME</th>
+            <th scope="col">ADDRESS</th>
+            <th scope="col">CONTACT</th>
+            <th scope="col">PRICE</th>
+            <th scope="col">AMOUNT COLLECTED</th>
+            <th scope="col">I HAVE UPLOAD BT</th>
+            <th scope="col">TASK STATUS</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <form action="/confirmpod" method="post"></form>
+        <% podOut.forEach((podOut,index) => {%>
+            <tr>
+                <td>
+                    <span><%= index + 1 %></span>
+                </td>
+                <td>ITEM WITH ME</td>
+                <td>
+                    <span><%= podOut.trackingNumber %></span>
+                    <input type="hidden" value="<%= podOut.trackingNumber %>">
+                </td>
+                <td>
+                    <span><%= podOut.name %></span>
+                    <input type="hidden" value="<%= podOut.name %>">
+                </td>
+                <td>
+                    <span><%= podOut.address %></span>
+                    <input type="hidden" value="<%= podOut.address %>">
+                </td>
+                <td>
+                    <span><%= podOut.contact %></span>
+                    <input type="hidden" value="<%= podOut.contact %>">
+                </td>
+                <td>
+                    <span><%= podOut.price %></span>
+                    <input type="hidden" value="<%= podOut.price %>">
+                </td>
+                <td>AMOUNT COLLECTED</td>
+                <td>I HAVE UPLOAD BT</td>
+                <td>TASK STATUS</td>
+            </tr>
+        <% })%>
+        </form>
+    </tbody>
+</table>

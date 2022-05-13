@@ -59,15 +59,65 @@ router.get('/podlistfi', (req,res) => {
 })
 
 //get list by product
-router.get('/list/:product/:page/:limit', (req,res,next)=>{
+router.get('/list/ZALORA/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
-    let product = req.params.product.toUpperCase()
+    let area = req.params.area
+    
     inventories
-        .find({product: product})
+        .find({area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
-            inventories.count({}).exec(function(err, count) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemList1', {
+                    moment: moment,
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/list/PHARMACY/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemList1', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/list/GRP/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
                     itemList: inventory,
@@ -84,7 +134,7 @@ router.get('/list/:product/:page/:limit', (req,res,next)=>{
 })
 
 //get podlist by area
-router.get('/podlist/:area', (req,res,next)=>{
+router.get('/podlist/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
@@ -93,7 +143,7 @@ router.get('/podlist/:area', (req,res,next)=>{
         .find({ podArea: area })
         .sort({entryDate: -1})
         .exec(function(err, pod) {
-            inventories.count({}).exec(function(err, count) {
+            inventories.count({podArea: area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('podList', {
                     podList: pod,
@@ -109,7 +159,7 @@ router.get('/podlist/:area', (req,res,next)=>{
         })
 })
 
-//get podlist by area
+//get podlist by name
 router.get('/podlist/:name', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
@@ -159,10 +209,6 @@ router.get('/podlist/:date', (req,res,next)=>{
                 })
             })
         })
-})
-
-router.get('/', (req,res,next)=>{
-    
 })
 
 router.get('/logout', (req, res, next) => {
@@ -245,14 +291,13 @@ router.post("/outlist/:page/:limit", (req,res) => {
 function addToItemOut(req,res,next){
     let item = req.body
     let date = moment().format("DD/MM/YYYY, h:mm:ss a")
-    let tomorrow = moment().add(1,"days").format("DD/MM/YYYY")
     let agent = "TEST"
     let tracker = item.trackingNumber
     let filter = {trackingNumber: tracker}
     let update = {
-            status: "SCHEDULE FOR DELIVERY by " + agent  + " at " + tomorrow, 
+            status: "SCHEDULE FOR DELIVERY by " + agent  + " at " + date, 
             $push: { history: {
-                statusDetail: "SCHEDULE FOR DELIVERY by " + agent + " at " + tomorrow, 
+                statusDetail: "SCHEDULE FOR DELIVERY by " + agent + " at " + date, 
                 dateUpdated: date,
                 updateBy: req.body.username, 
                 updateById: req.body.userID, 
@@ -279,21 +324,18 @@ function addToItemOut(req,res,next){
     })
     deliSchedule.save((err) => {
         if(err){
-            alert(`
-            Error Code: 4
-            Failed to add ${tracker} to list.
-            `)
+            console.log(err)
+            alert(err)
         }
         else{
             inventories.findOneAndUpdate(filter,update,(err,result) => {
                 if(err) return console.log (err)
                 else{
-                    alert(`${tracker} has been schedule for delivery at ${date} to ${agent}.`)
+                    alert(`${tracker} has been release for pod or self-collect at ${date} to ${agent}.`)
                     res.status(204).send()
                     res.end()
                 }
             })
-            //alert(`${tracker} has been schedule for delivery at ${date} to ${agent}.`)
         }
     })
 }
@@ -302,49 +344,10 @@ router.get("/schedulelist", (req,res) => {
     findScheduleList (req,res)
 })
 
-
-function findScheduleList (req,res){
-    let agent = req.body.agentName
-    let date = req.body.dateSchedule
-    deliScheduleDB.find({}, (err,list) => {
-        if (agent == list.agentName && date == list.dateSchedule){
-            res.render('schlist',{
-                scheduleList: list,
-                name: currentUser.name,
-                icNumber: currentUser.icNumber,
-                position: currentUser.position,
-            })
-        }
-        else{
-            alert(`No List available`)
-        }
-    })
-}
-
-router.get('/itemoutsss', (req,res) => {
-    getItemOut(req,res)
-})
-
-function getItemOut(req,res){
-    inventories.find({},(err,outlist) => {
-        res.render('itemout', {
-            itemList: outlist,
-            name: currentUser.name,
-            icNumber: currentUser.icNumber,
-            position: currentUser.position,
-
-        })
-    })
-}
-
-router.post('/pout', (req,res) => {
-    addToPod(req,res)
-})
-
 //If removed from outlist and pod
 function removedFromSchedule(req,res){
     let item = req.body
-    let date = moment().format('DD/MM/YYYY')
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
     let tracker = item.trackingNumber
     console.log(item.trackingNumber)
     let filter = {trackingNumber: item.trackingNumber}
@@ -371,25 +374,53 @@ function removedFromSchedule(req,res){
                     alert(`Failed to removed ${tracker}`)
                 }
                 else{
-                    alert(`sudah add`)
+                    alert(`${tracker} has been removed from schedule for delivery list at ${date} by ${agent}.`)
+                    res.status(204).send()
+                    res.end()
                 }
             })
         }
     })
 }
 
+router.get('/addtopod/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    
+    podOutDB
+        .find({ podArea: area })
+        .sort({entryDate: -1})
+        .exec(function(err, podOut) {
+            podOutDB.count({podArea: area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('podbylist', {
+                    podOut: podOut,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
 //Add to POD for TC to create pod [Warehouse --> Sowdeq]
 function addToPod(req,res){
     let date = moment().format("DD/MM/YYYY")
+    let tomorrow = moment().add(1,"days").format("DD/MM/YYYY")
     let item = req.body
     let tracker = item.trackingNumber
     let agent = item.agentName
     let filter = {trackingNumber: tracker}
     let update = {
-        status: "OUT FOR DELIVERY by " + agent + " at " + date,
+        status: "OUT FOR DELIVERY by " + agent + " at " + tomorrow,
         $push: {
             history: {
-                statusDetail: "OUT FOR DELIVERY by " + agent, 
+                statusDetail: "OUT FOR DELIVERY by " + agent + " at " + tomorrow, 
                 dateUpdated: date,
                 updateBy: req.body.username, 
                 updateById: req.body.userID, 
@@ -398,13 +429,13 @@ function addToPod(req,res){
         }
     }
     inventories.findOneAndUpdate(filter,update,(err,res) => {
-        if(err) return alert(`nada update`)
+        if(err) return alert(`Failed to update ${tracker} to POD`)
         else{
             deliScheduleDB.deleteOne(filter, (err)=> {
                 console.log(filter)
-                if(err) return alert(`Failed to removed ${tracker}`)
+                if(err) return alert(`Failed to removed ${tracker}.`)
                 else{
-                    alert(`sudah add`)
+                    alert(`${tracker} has been updated.`)
                 }
             })
         }
@@ -424,13 +455,28 @@ function addToPod(req,res){
     })
     podOut.save((err)=> {
         if(err){
-           alert(err)
+            console.log(err)
+            alert(err)
         }
         else{
-            alert(`${tracker} this parcel has been added into the list.`)
+            alert(`${tracker} will be out for delivery at ${tomorrow} to ${agent}.`)
+            res.status(204).send()
+            res.end()
         }
     })
 }
+
+router.post("/outlist/:page/:limit", (req,res) => {
+    if(req.body.formMETHOD === "ADD"){
+        addToPod(req,res)
+    }
+    else if(req.body.formMETHOD === "REMOVED"){
+        removedFromSchedule(req,res)
+    }
+    else{
+        alert(`Failed to conduct both actions.`)
+    }
+})
 
 
 /******************************************************************************************************************************************************************************/
@@ -525,12 +571,8 @@ function user(req,res) {
     })
     user.save((err) => {
         if (err){
-            res.render('error', {
-                code: 'Mongo = 11000',
-                head:'Invalid Entry',
-                message:'User IC-Number / Social Security Number already in Database',
-                solution: 'Retry registration. If persist please contact RDI ext 877'
-            })
+            console.log(err)
+            alert(err)
         }else {
             res.render ('success', {
                 head: "Account Created",
@@ -649,30 +691,6 @@ function login(req,res){
                         
                     }
                     else if (position == "TW"){res.render('')}
-                    else if (position == "DIS"){
-                        dispatchDB.find({}, function(err,dispatch) {
-                            res.render('dashboardDis', {
-                                dispatch: dispatch,
-                                name: user.name,
-                                icNumber: user.icNumber,
-                                position: user.position,
-                                contact: user.contact,
-                                office: user.office,
-                            })
-                        })  
-                    }
-                    else if (position == "DIS-EFR"){
-                        dispatchDB.find({}, function(err,dispatch) {
-                            res.render('dashboardDIS', {
-                                dispatch: dispatch,
-                                name: user.name,
-                                icNumber: user.icNumber,
-                                position: user.position,
-                                contact: user.contact,
-                                office: user.office,
-                            })
-                        })  
-                    }
                     else if (position == "FIN"){
                         inventories.find({}, (err,zaloraInventory) => {
                         podDB.find({}, (err,pod) =>{
@@ -724,14 +742,10 @@ function firstTimeLogin(req,res){
         userDB.findOneAndUpdate(filter, update, (err,user) => {
             if(err){
                 console.log(err)
-                res.render('error',{
-                    head: "Error",
-                    code: "10",
-                    message: "Failed to Update Password",
-                    solution: "Please contact RDI Department ext 877"
-                })
+                alert(err)
             } 
             else{
+                alert(`Password Updated`)
                 res.render('login')
             }
         })
@@ -869,10 +883,11 @@ router.get('/selfcollect', (req,res) => {
 })
 
 router.post('/confirmed', (req,res) => {
-    let date = moment().format("DD/MM/YYYY");
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a");
+    let tracker = req.body.trackingNumber
     let filter = {trackingNumber: req.body.trackingNum}
-    console.log(req.body.trackingNum)
-    console.log(req.body.trackingNumber)
+    //console.log(req.body.trackingNum)
+    //console.log(req.body.trackingNumber)
     let update = {status: "SELF COLLECTED " + "["+ req.body.csName +"]" + " at " + date, 
         $push:{
             history: {
@@ -885,17 +900,12 @@ router.post('/confirmed', (req,res) => {
         }
     }
     let option = {upsert: true, new: true}
-    console.log(req.body.trackingNum)
-    console.log(filter)
+    //console.log(req.body.trackingNum)
+    //console.log(filter)
     inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
         if(err){
             console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
+            alert(`Failed to update ${tracker}`)
         } 
         else{
             console.log(docs)
@@ -904,42 +914,28 @@ router.post('/confirmed', (req,res) => {
     })
 })
 
-
 //This is used for return details >>>>> ADD USER <<<<<<
 function exportReturn(req,res){
-    let date = moment().format("DD/MM/YYYY")
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
+    let tracker = req.body.trackingNumber
     let filter = {trackingNumber: req.body.trackingNumber}
-    let update = {status: "RETURN TO MY"}
     let option = {upsert: true, new: true}
-    let history = {history: {statusDetail: "RETURN TO MY"}}
-    inventories.findOneAndUpdate(filter,{$push: history}, option, (err,docs) => {
-        if(err){
-            console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
-        } 
-        else {
-            console.log('update success')
-            let date = req.body.dateSchedule
-            res.render('success',{
-                head: "Tracking Number has been updated",
-                message: `The tracking number has been reSchedule for delivery on ${date}`
-            })
+    let update = {
+        status: "RETURN TO MY" + " at " + req.body.dateSchedule,
+        $push: {
+            history: {
+                statusDetail: "RETURN TO MY" + " at " + req.body.dateSchedule,
+                dateUpdated: date, 
+                updateBy: req.body.username, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.userPos
+            }
         }
-    })
+    }
     inventories.findOneAndUpdate(filter,update, option, (err,docs) => {
         if(err){
             console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
+            alert(`Failed to update ${tracker}`)
         } 
         else {
             console.log('update success')
@@ -962,12 +958,7 @@ function exportReturn(req,res){
     exportReturn.parcelContent.push(item)
     exportReturn.save((err) => {
         if (err){
-            res.render('error', {
-                code: 'Mongo = 11000',
-                head:'Invalid Entry',
-                message:'Tracking Number already exist within the database', 
-                solution: 'Retry entering database. If persist please contact RDI ext 877'
-            })
+            alert(err)
         }else {
             res.render ('success', {
                 head: "Successfully save",
@@ -980,53 +971,29 @@ function exportReturn(req,res){
 
 //reEntry parcels >>>>>>>>> ADD USER <<<<<<<<<<<<
 function reEntry(req,res){
-    let date = moment().format("DD/MM/YYYY");
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a");
     let filter = {trackingNumber: req.body.trackingNumber}
-    let history = {
-        history: {
-            statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]",
-            dateUpdated: date, 
-            updateBy: req.body.username, 
-            updateById: req.body.userID, 
-            updateByPos: req.body.userPos
-        }
-    }
     let update = {
-        status: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " at " + date,
+        status: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " Reschedule at " + req.body.dateSchedule,
         reason: req.body.reason,
         remark: req.body.remark,
         reEntry: "TRUE",
         reSchedule: req.body.dateSchedule,
+        $push: {
+            history: {
+                statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " Reschedule at " + req.body.dateSchedule,
+                dateUpdated: date, 
+                updateBy: req.body.username, 
+                updateById: req.body.userID, 
+                updateByPos: req.body.userPos
+            }
+        }
     }
     let option = {upsert: true, new: true}
-    inventories.findOneAndUpdate(filter, {$push: history}, option, (err,docs) => {
-        if(err){
-            console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
-        } 
-        else {
-            console.log('update success')
-            let date = req.body.dateSchedule
-            res.render('success',{
-                head: "Tracking Number has been updated",
-                message: `The tracking number has been reSchedule for delivery on ${date}`
-            })
-        } 
-    })
     inventories.findOneAndUpdate(filter,update,option, (err,docs) => {
         if(err){
             console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
+            alert(err)
         } 
         else {
             console.log('update success')
@@ -1044,6 +1011,7 @@ function itemOut(req,res){
     let status = {status: req.body.status}
     let date = moment().format("DD/MM/YYYY, h:mm:ss a")
     let tracker = {trackingNumber: req.body.trackingNum}
+    let track = req.body.trackingNumber
     let update = {
         status: "SCHEDULE FOR DELIVERY " + " to " + req.body.agentName + " at " + date, 
         $push:{
@@ -1083,12 +1051,7 @@ function itemOut(req,res){
     inventories.findOneAndUpdate(tracker,update,option,(err,docs) => {
         if(err){
             console.log(err)
-            res.render('error',{
-                head: "Error",
-                code: "10",
-                message: "Failed to update database",
-                solution: "Please contact RDI Department ext 877"
-            })
+            alert(`Failed to update ${track}`)
         } 
         else {
             console.log('update success')
@@ -1101,14 +1064,6 @@ function itemOut(req,res){
         } 
     })
 }
-
-router.get("/test", (req,res) => {
-    inventories.find({}, function(err,inventory){
-        res.render('testpod', {
-            itemList: inventory,
-        })
-    })
-})
 
 //POD access by warehouse supervisor and transport controller
 function pod(req,res){
@@ -1136,12 +1091,7 @@ function pod(req,res){
         inventories.findOneAndUpdate(filter, update, option, (err,docs) => {
             if(err){
                 console.log(err)
-                res.render('error',{
-                    head: "Error",
-                    code: "10",
-                    message: "Failed to update database",
-                    solution: "Please contact RDI Department ext 877"
-                })
+                alert(`Failed to update ${tracker}`)
             } 
             else {
                 alert('Tracking number successfully updated.')
@@ -1171,13 +1121,8 @@ function pod(req,res){
    console.log(body.trackingNumC)
     itemOut.save((err) => {
         if (err){
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    error_code: '11000',
-                    head:'Invalid Entry',
-                    message:'Tracking Number already exist within the database'
-                })
-            }
+            console.log(err)
+            alert(err)
         }else {
             res.render ('success', {
                 head: "Task Assigned",
@@ -1189,7 +1134,8 @@ function pod(req,res){
 
 //Item into warehouse
 function itemin(req,res){
-    let date = moment().format('DD/MM/YYYY')
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
+    let tracker = req.body.trackingNumber
     let parcelStatus = {
         statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]", 
         dateUpdated: date,
@@ -1227,13 +1173,10 @@ function itemin(req,res){
     inventory.history.push(parcelStatus)
     inventory.save((err) => {
         if (err) {
-            res.render('error', {
-                code: 'Mongo = 11000',
-                head:'Invalid Entry',
-                message:'Tracking Number already exist within the database',
-                solution: 'Please recheck on item list. If persist please contact RDI ext 877'
-            })
+            console.log(err)
+            alert(err)
         }else {
+            alert(`${tracker} successfully added into database`)
             res.redirect ('itemin')
         }
     })
@@ -1262,7 +1205,7 @@ function pharmacyIn (req,res){
     let inventory = new inventories({
         trackingNumber: req.body.trackingNumber,
         parcelNumber: req.body.parcelNumber,
-        patientNo: req.body.patientNo,
+        patientNumber: req.body.patientNumber,
         name: req.body.name,
         contact: req.body.contact,
         address: req.body.address,
@@ -1314,7 +1257,7 @@ function grpBN (req,res){
     let inventory = new inventories({
         trackingNumber: req.body.trackingNumber,
         parcelNumber: req.body.parcelNumber,
-        patientNo: req.body.patientNo,
+        grpTrack: req.body.grpTrack,
         name: req.body.name,
         contact: req.body.contact,
         address: req.body.address,
