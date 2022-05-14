@@ -30,25 +30,62 @@ router.get('/tookout', (req,res)=>{
     res.render('pew')
 })
 
-router.post('/tookan', (req,res)=>{
-    var request = require('request');
-    let tracker = req.body.trackingNumber
-    console.log(req.body.trackingNumber)
-    request({
-      method: 'POST',
-      url: 'https://api.tookanapp.com/v2/get_job_details',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: `{  \"api_key\": \"51676580f24b091114132d38111925401ee4c2f328d978375e1f03\",  \"job_ids\": [${tracker}],  \"include_task_history\": 0}`
-    }, function (error, response, body) {
-      console.log('Status:', response.statusCode);
-      console.log('Headers:', JSON.stringify(response.headers));
-      console.log('Response:', body);
-
-    });
-
+router.post('/editSuccess', (req,res)=>{
+    if (req.body.formMETHOD == "editTC"){
+        editSubmitTC(req,res)
+    }
+    else if (req.body.formMETHOD == "editWH"){
+        editSubmitWH(req,res)
+    }
+    else{
+        alert(`Failed to update data.`)
+    }
 })
+
+
+
+function editSubmitTC(req,res){
+    let tracker = req.body.trackingNumber
+    let filter = {trackingNumber: tracker}
+    let upate = {
+        adress: req.body.adress,
+        contact: req.body.contact,
+        area: req.body.area,
+        areaIndicator: req.body.areaIndicator,
+    }
+    inventories.findOneAndUpdate(filter,update,option, (err,result)=>{
+        if (err){
+            console.log(err)
+            alert(`Failed to update the information for ${tracker}`)
+        }
+        else{
+            alert(`${tracker} has been removed from schedule for delivery list at ${date} by ${agent}.`)
+            res.status(204).send()
+            res.end()
+        }
+    })
+}
+
+function editSubmitWH(req,res){
+    let tracker = req.body.trackingNumber
+    let filter = {trackingNumber: tracker}
+    let update = {
+        area: req.body.area,
+        areaIndicator: req.body.areaIndicator,
+        note: req.body.note,
+    }
+    inventories.findOneAndUpdate(filter,update,option, (err,result)=>{
+        if (err){
+            console.log(err)
+            alert(`Failed to update the information for ${tracker}`)
+        }
+        else{
+            alert(`${tracker} has been removed from schedule for delivery list at ${date} by ${agent}.`)
+            res.status(204).send()
+            res.end()
+        }
+    })
+}
 
 router.get('/podlistfi', (req,res) => {
     podDB.find({}, (err,pod) => {
@@ -1146,7 +1183,7 @@ function itemin(req,res){
     let inventory = new inventories({
        trackingNumber: req.body.trackingNumber,
        parcelNumber: req.body.parcelNumber,
-       patientNo: req.body.patientNo,
+       patientNumber: req.body.patientNum,
        name: req.body.name,
        contact: req.body.contact,
        address: req.body.address,
@@ -1205,12 +1242,12 @@ function pharmacyIn (req,res){
     let inventory = new inventories({
         trackingNumber: req.body.trackingNumber,
         parcelNumber: req.body.parcelNumber,
-        patientNumber: req.body.patientNumber,
+        patientNumber: req.body.patientNum,
         name: req.body.name,
         contact: req.body.contact,
         address: req.body.address,
         area: req.body.area,
-        frigde: req.body.fridge,
+        fridge: req.body.fridge,
         areaIndicator: req.body.areaLoc,
         task: req.body.taskCB,
         product: req.body.formMETHOD,
