@@ -201,6 +201,16 @@
                         </div>
 
                         <div class="form-group mx-sm-3 mb-2">
+                          <label for="editAddress">Contact</label>
+                          <input type="text" class="form-control" id="editAddress<%= index %>" name="address" value="<%= inventory.contact %>">
+                        </div>
+
+                        <div class="form-group mx-sm-3 mb-2">
+                          <label for="editContact">Address</label>
+                          <input type="text" class="form-control" id="editContact<%= index %>" name="contact" value="<%= inventory.address %>">
+                        </div>
+
+                        <div class="form-group mx-sm-3 mb-2">
                           <label for="editArea">Area</label>
                           <input type="text" class="form-control" id="editArea<%= index %>" name="area" value="<%= inventory.area %>">
                         </div>
@@ -209,23 +219,14 @@
                           <label for="editLocation">Location</label>
                           <input type="text" class="form-control" id="editLocation<%= index %>" name="areaIndicator" value="<%= inventory.areaIndicator %>">
                         </div>
-
-                        <div class="form-group mx-sm-3 mb-2">
-                          <label for="editPN">Area</label>
-                          <input type="text" class="form-control" id="editPN<%= index %>" name="parcelNumber value="<%= inventory.parcelNumber %>">
-                        </div>
-
-                        <div class="form-group mx-sm-3 mb-2">
-                            <label for="editNote">Note</label>
-                            <input type="text" class="form-control" id="editNote<%= index %>" name="note" value="<%= inventory.note %>">
-                          </div>
                     </div>
 
+                      <input type="text" name="username" value="<%= name %>" hidden>
+                      <input type="text" name="userID" value="<%= icNumber %>" hidden>
+                      <input type="text" name="userPos" value="<%= position %>" hidden>
+                      <input type="text" name="formMETHOD" value="editTC" hidden>
+
                     <div class="modal-footer">
-                      <input type="text" class="form-control" name="username" value="<%= name %>" hidden>
-                      <input type="text" class="form-control" name="userID" value="<%= icNumber %>" hidden>
-                      <input type="text" class="form-control" name="userPos" value="<%= position %>" hidden>
-                      <input type="text" class="form-control" name="formMETHOD" value="editTC" hidden>
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                       <button type="button" class="btn btn-primary"><i class="far fa-save"></i></button>
                     </div>
@@ -235,7 +236,6 @@
                   </div>
                 </div>
               </div>
-
 
             <!--Render List-->
               <tr class="content">

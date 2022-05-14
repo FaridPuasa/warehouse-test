@@ -174,6 +174,156 @@ router.get('/list/GRP/:area/:page/:limit', (req,res,next)=>{
         })
 })
 
+//get list by product for warehouse
+router.get('/list/warehouse/ZALORA/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemListWarehouse', {
+                    moment: moment,
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/list/warehouse/PHARMACY/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemListWarehouse', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/list/warehouse/GRP/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemListWarehouse', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+//get list by product for tc
+router.get('/list/tc/ZALORA/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemListTC', {
+                    moment: moment,
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/list/tc/PHARMACY/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemListTC', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
+router.get('/list/tc/GRP/:area/:page/:limit', (req,res,next)=>{
+    let limit = req.params.limit || 10
+    let page = req.params.page || 1
+    let area = req.params.area
+    inventories
+        .find({area: area})
+        .sort({entryDate: -1})
+        .exec(function(err, inventory) {
+            inventories.count({area:area}).exec(function(err, count) {
+                if (err) return next(err)
+                res.render('itemListTC', {
+                    itemList: inventory,
+                    total: count,
+                    current: page,
+                    limit: limit,
+                    name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    pages: Math.ceil(count / limit)
+                })
+            })
+        })
+})
+
 //get podlist by area
 router.get('/podlist/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
