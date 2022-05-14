@@ -50,20 +50,29 @@ router.post('/editSuccess', (req,res)=>{
 
 function editSubmitTC(req,res){
     let tracker = req.body.trackingNumber
+    let date = moment().format("")
     let filter = {trackingNumber: tracker}
-    let upate = {
-        adress: req.body.adress,
-        contact: req.body.contact,
-        area: req.body.area,
-        areaIndicator: req.body.areaIndicator,
+    let update = {adress: req.body.adress, contact: req.body.contact,area: req.body.area, areaIndicator: req.body.areaIndicator,
+        $push: {
+            editHistory: {
+                oldAddress: req.body.oldAddress,
+                oldContact: req.body.oldContact,
+                oldArea: req.body.oldArea,
+                oldAreaIndicator: req.body.oldAreaIndicator,
+                editedBy: req.body.username,
+                editedAt: date,
+            }
+        }
     }
+    let option = {upsert: true, new: true}
     inventories.findOneAndUpdate(filter,update,option, (err,result)=>{
         if (err){
             console.log(err)
             alert(`Failed to update the information for ${tracker}`)
         }
         else{
-            alert(`${tracker} has been removed from schedule for delivery list at ${date} by ${agent}.`)
+            console.log(result)
+            alert(`${tracker} has been updated ${date}.`)
             res.status(204).send()
             res.end()
         }
@@ -73,18 +82,27 @@ function editSubmitTC(req,res){
 function editSubmitWH(req,res){
     let tracker = req.body.trackingNumber
     let filter = {trackingNumber: tracker}
-    let update = {
-        area: req.body.area,
-        areaIndicator: req.body.areaIndicator,
-        note: req.body.note,
+    let date = moment().format("")
+    let update = {area: req.body.area, areaIndicator: req.body.areaIndicator,note: req.body.note,
+        $push: {
+            editHistory: {               
+                oldNote: req.body.oldNote,
+                oldArea: req.body.oldArea,
+                oldAreaIndicator: req.body.oldAreaIndicator,
+                editedBy: req.body.username,
+                editedAt: date,
+            }
+        }
     }
+    let option = {upsert: true, new: true}
     inventories.findOneAndUpdate(filter,update,option, (err,result)=>{
         if (err){
             console.log(err)
             alert(`Failed to update the information for ${tracker}`)
         }
         else{
-            alert(`${tracker} has been removed from schedule for delivery list at ${date} by ${agent}.`)
+            console.log(result)
+            alert(`${tracker} has been updated at ${date}.`)
             res.status(204).send()
             res.end()
         }
@@ -104,15 +122,18 @@ router.get('/list/ZALORA/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "ZALORA"
     
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
                     moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -130,13 +151,18 @@ router.get('/list/PHARMACY/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "PHARMACY"
+    
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
+                    moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -154,13 +180,18 @@ router.get('/list/GRP/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "GRP"
+    
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
+                    moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -179,15 +210,18 @@ router.get('/list/warehouse/ZALORA/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
-    
+    let product = req.params.product || "ZALORA"
+
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemListWarehouse', {
                     moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -205,13 +239,18 @@ router.get('/list/warehouse/PHARMACY/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "PHARMACY"
+    
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemListWarehouse', {
+                    moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -229,13 +268,18 @@ router.get('/list/warehouse/GRP/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "GRP"
+    
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemListWarehouse', {
+                    moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -254,15 +298,18 @@ router.get('/list/tc/ZALORA/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "ZALORA"
     
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemListTC', {
                     moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -280,13 +327,18 @@ router.get('/list/tc/PHARMACY/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "PHARMACY"
+    
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemListTC', {
+                    moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -304,13 +356,18 @@ router.get('/list/tc/GRP/:area/:page/:limit', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
     let area = req.params.area
+    let product = req.params.product || "GRP"
+    
     inventories
-        .find({area: area})
+        .find({product: product, area: area})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
             inventories.count({area:area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemListTC', {
+                    moment: moment,
+                    area: area,
+                    product: product,
                     itemList: inventory,
                     total: count,
                     current: page,
@@ -337,6 +394,7 @@ router.get('/podlist/:area/:page/:limit', (req,res,next)=>{
             inventories.count({podArea: area}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('podList', {
+                    moment: moment,
                     podList: pod,
                     total: count,
                     current: page,
@@ -1010,19 +1068,9 @@ router.get('/itemin/grp', (req,res) => {
     console.log(currentUser.position)
 })
 
-router.post('/itemin',(req,res) => {
-    if(req.body.formMETHOD == "ZALORA"){
-        itemin(req,res)
-    }
-    else if (req.body.formMETHOD == "PHARMACY"){
-        pharmacyIn(req,res)
-    }
-    else if (req.body.formMETHOD == "GRP"){
-        grpBN(req,res)
-    }
-    else{
-        alert(`Failed to submit forms.`)
-    }
+router.post('/itemin/zalora',(req,res) => {
+    console.log(req.body.formMETHOD)
+    itemin(req,res)
 })
 
 //Zalora Out
@@ -1192,14 +1240,13 @@ function reEntry(req,res){
     let date = moment().format("DD/MM/YYYY, h:mm:ss a");
     let filter = {trackingNumber: req.body.trackingNumber}
     let update = {
-        status: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " Reschedule at " + req.body.dateSchedule,
-        reason: req.body.reason,
+        status: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " Reschedule at ",
         remark: req.body.remark,
         reEntry: "TRUE",
         reSchedule: req.body.dateSchedule,
         $push: {
             history: {
-                statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " Reschedule at " + req.body.dateSchedule,
+                statusDetail: "IN WAREHOUSE" + "[" + req.body.reason + "]" + " Reschedule at ",
                 dateUpdated: date, 
                 updateBy: req.body.username, 
                 updateById: req.body.userID, 
@@ -1394,7 +1441,7 @@ function itemin(req,res){
             alert(err)
         }else {
             alert(`${tracker} successfully added into database`)
-            res.redirect ('itemin')
+            res.redirect ('/itemin/zalora')
         }
     })
 }
@@ -1410,8 +1457,16 @@ router.get('/pharmacyin',(req,res) => {
     })
 })
 
+router.post('/itemin/pharmacy', (req,res)=>{
+    console.log(req.body.formMETHOD)
+    pharmacyIn(req,res)
+})
+
 //Pharmacy In
 function pharmacyIn (req,res){
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
+    let tracker = req.body.trackingNumber
+    console.log(tracker)
     let parcelStatus = {
         statusDetail: "IN MED ROOM" + "[" +req.body.area + "]", 
         dateUpdated: date,
@@ -1449,21 +1504,25 @@ function pharmacyIn (req,res){
     inventory.history.push(parcelStatus)
     inventory.save((err) => {
         if (err) {
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    code: 'Mongo = 11000',
-                    head:'Invalid Entry',
-                    message:'Tracking Number already exist within the database'
-                })
-            }
+            console.log(err)
+            alert(err)
         }else {
-            res.redirect ('pharmain')
+            res.redirect ('/itemin/pharmacy')
         }
     })
 }
 
+router.post('/itemin/grp', (req,res)=>{
+    console.log(req.body.formMETHOD)
+    grpBN(req,res)
+})
+
+
 //GRP BN
 function grpBN (req,res){
+    let date = moment().format("DD/MM/YYYY, h:mm:ss a")
+    let tracker = req.body.trackingNumber
+    console.log(tracker)
     let parcelStatus = {
         statusDetail: "IN WAREHOUSE" + "[" +req.body.area + "]", 
         dateUpdated: date,
@@ -1501,15 +1560,10 @@ function grpBN (req,res){
     inventory.history.push(parcelStatus)
     inventory.save((err) => {
         if (err) {
-            if (err.name === 'MongoError' && err.code === 11000){
-                res.render('error', {
-                    code: 'Mongo = 11000',
-                    head:'Invalid Entry',
-                    message:'Tracking Number already exist within the database'
-                })
-            }
+            console.log(err)
+            alert(err)
         }else {
-            res.redirect ('pharmain')
+            res.redirect ('/itemin/grp')
         }
     })
 }

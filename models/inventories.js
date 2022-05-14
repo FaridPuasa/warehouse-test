@@ -41,7 +41,8 @@ const inventorySchema  = new mongoose.Schema({
     userName: reqString,
     userID: reqString,
     userPos: reqString,
-    history: [{statusDetail: reqString, dateUpdated: entryDate, updateBy: reqString, updateById: reqString, updateByPos: reqString}],
+    history: [{statusDetail: reqString, dateUpdated: reqString ,updateBy: reqString, updateById: reqString, updateByPos: reqString}],
+    editHistory: [{oldArea: reqString, oldAreaIndicator: reqString , oldNote: reqString, oldAddress: reqString, oldContact: reqString, editedBy: reqString, editedAt: reqString}],
 }, {timestamps: true})
 
 inventorySchema.index({createdAt: 1},{expireAfterSeconds: 31536000});//1 year

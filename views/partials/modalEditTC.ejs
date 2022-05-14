@@ -9,7 +9,7 @@
           </button>
         </div>
         <div class="modal-body container col-md-12">
-          <form class="form" action="/editTc" method="post">
+          <form class="form" action="/editSuccess" method="post">
 
             <div class="form-group mx-sm-3 mb-2">
               <h4>Name:</h4>
@@ -38,10 +38,10 @@
         </div>
 
         <div class="modal-footer">
-          <input type="text" class="form-control" name="username" value="<%= name %>" hidden>
-          <input type="text" class="form-control" name="userID" value="<%= icNumber %>" hidden>
-          <input type="text" class="form-control" name="userPos" value="<%= position %>" hidden>
-          <input type="text" class="form-control" name="formMETHOD" value="editTC" hidden>
+          <input type="hidden" class="form-control" name="username" value="<%= name %>" >
+          <input type="hidden" class="form-control" name="userID" value="<%= icNumber %>" >
+          <input type="hidden" class="form-control" name="userPos" value="<%= position %>" >
+          <input type="hidden" class="form-control" name="formMETHOD" value="editTC">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary"><i class="far fa-save"></i></button>
         </div>

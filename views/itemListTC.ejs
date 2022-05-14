@@ -100,10 +100,30 @@
         <div class="dropdown">
           <button class="btn btn-primary dropdown-toggle m-1" type="button" data-toggle="dropdown">Show<span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="/list/<%=pages%>/25">25</a></li>
-              <li><a href="/list/<%=pages%>/50">50</a></li>
-              <li><a href="/list/<%=pages%>/75">75</a></li>
-              <li><a href="/list/<%=pages%>/100">100</a></li>
+              <li><a href="/list/<%=product%>/<%=area%>/<%=pages%>/25">25</a></li>
+              <li><a href="/list/<%=product%>/<%=area%>/<%=pages%>/50">50</a></li>
+              <li><a href="/list/<%=product%>/<%=area%>/<%=pages%>/75">75</a></li>
+              <li><a href="/list/<%=product%>/<%=area%>/<%=pages%>/100">100</a></li>
+            </ul>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle m-1" type="button" data-toggle="dropdown">Area<span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a href="/list/<%=product%>/B1/<%=pages%>/10">B1</a></li>
+              <li><a href="/list/<%=product%>/B2/<%=pages%>/10">B2</a></li>
+              <li><a href="/list/<%=product%>/G1/<%=pages%>/10">G1</a></li>
+              <li><a href="/list/<%=product%>/G2/<%=pages%>/10">G2</a></li>
+              <li><a href="/list/<%=product%>/JT1/<%=pages%>/10">JT1</a></li>
+              <li><a href="/list/<%=product%>/JT2/<%=pages%>/10">JT2</a></li>
+              <li><a href="/list/<%=product%>/JT3/<%=pages%>/10">JT3</a></li>
+              <li><a href="/list/<%=product%>/TUTONG/<%=pages%>/10">TUTONG</a></li>
+              <li><a href="/list/<%=product%>/KB/<%=pages%>/10">KB</a></li>
+              <li><a href="/list/<%=product%>/SERIA/<%=pages%>/10">SERIA</a></li>
+              <li><a href="/list/<%=product%>/LUMUT/<%=pages%>/10">LUMUT</a></li>
+              <li><a href="/list/<%=product%>/KB%20%2F%20SERIA/<%=pages%>/10">KB / SERIA</a></li>
+              <li><a href="/list/<%=product%>/TEMBURONG/10">TEMBURONG</a></li>
+              <li><a href="/list/<%=product%>/<%=area%>/<%=pages%>/10"></a></li>
             </ul>
             <%=limit%> of <%= total %>
         </div>
@@ -193,7 +213,7 @@
                       </button>
                     </div>
                     <div class="modal-body container col-md-12">
-                      <form class="form" action="/editTc" method="post">
+                      <form class="form" action="/editSuccess" method="post">
 
                         <div class="form-group mx-sm-3 mb-2">
                           <h4>Name:</h4>
