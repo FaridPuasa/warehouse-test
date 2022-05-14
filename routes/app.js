@@ -25,6 +25,10 @@ const delischedule = require('../models/delischedule');
 
 let currentUser = {}
 
+router.get('/dash', (req,res)=>{
+    res.render('dashboard')
+})
+
 router.get('/tookout', (req,res)=>{
     console.log(req.body.trackingNumber)
     res.render('pew')
@@ -829,7 +833,7 @@ router.get('/list/:page/:limit', (req,res,next) => {
 })
 
 //Zalora In
-router.get('/itemin', (req,res) => {
+router.get('/itemin/zalora', (req,res) => {
     res.render('itemin', {
         name: currentUser.name,
         icNumber: currentUser.icNumber,
@@ -838,8 +842,37 @@ router.get('/itemin', (req,res) => {
     console.log(currentUser.position)
 })
 
+router.get('/itemin/pharmacy', (req,res) => {
+    res.render('iteminpharmacy', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
+    console.log(currentUser.position)
+})
+
+router.get('/itemin/grp', (req,res) => {
+    res.render('itemingrp', {
+        name: currentUser.name,
+        icNumber: currentUser.icNumber,
+        position: currentUser.position,
+    })
+    console.log(currentUser.position)
+})
+
 router.post('/itemin',(req,res) => {
-    itemin(req,res)
+    if(req.body.formMETHOD == "ZALORA"){
+        itemin(req,res)
+    }
+    else if (req.body.formMETHOD == "PHARMACY"){
+        pharmacyIn(req,res)
+    }
+    else if (req.body.formMETHOD == "GRP"){
+        grpBN(req,res)
+    }
+    else{
+        alert(`Failed to submit forms.`)
+    }
 })
 
 //Zalora Out
@@ -887,7 +920,6 @@ router.get('/reentry', (req,res) => {
 router.post('/reentryConfirm', (req,res) =>{
     reEntry(req,res)
 })
-
 
 //Zalora Export Return
 router.get('/return', (req,res) => {
@@ -1005,7 +1037,6 @@ function exportReturn(req,res){
     })
 }
 
-
 //reEntry parcels >>>>>>>>> ADD USER <<<<<<<<<<<<
 function reEntry(req,res){
     let date = moment().format("DD/MM/YYYY, h:mm:ss a");
@@ -1074,14 +1105,12 @@ function itemOut(req,res){
                 //console.log(result.count)
             }
             else if (count >= 4){
-                /*res.render('error', {
-                    code: "9",
-                    head: "Max delivery attempt reached",
-                    message: "Parcel reach maximum number of attempts",
-                    solution: "Please inform warehouse supervisor to schedule for return or inform customer to self collect the parcel.",
-                })*/
                 alert('Maximum delivery attempt reached. Please inform Warehouse supervisor or customer for self collection.')
                 console.log("new" + count)
+            }
+            else{
+                console.log(err)
+                alert(err)
             }
         }
     })
@@ -1190,6 +1219,7 @@ function itemin(req,res){
        area: req.body.area,
        areaIndicator: req.body.areaLoc,
        task: req.body.taskCB,
+       tag: req.body.zaloraTag,
        product: req.body.formMETHOD,
        value: req.body.value,
        status: "IN WAREHOUSE" + "[" + req.body.area + "]" + " at " + req.body.dateEntry,

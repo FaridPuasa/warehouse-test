@@ -21,6 +21,7 @@ const inventorySchema  = new mongoose.Schema({
     address: reqString,
     area: reqString,
     areaIndicator: reqString,
+    tag: reqString,
     product: reqString,
     value: reqString,
     reason: reqString,
