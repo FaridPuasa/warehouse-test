@@ -794,7 +794,7 @@ router.post('/registerSuccess', (req,res) => {
     user(req,res)
 })
 
-router.get('/login', (req,res) => {
+router.get('/', (req,res) => {
     res.render('login')
 })
 
@@ -877,7 +877,7 @@ function login(req,res){
                     if (position == "AD"){
                         inventories.find({}, (err,zaloraInventory) => {
                             dispatchDB.find({}, (err,dispatch) => {
-                                res.render('dashboardad', {
+                                res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
                                     id: user._id,
@@ -885,7 +885,8 @@ function login(req,res){
                                     icNumber: user.icNumber,
                                     position: user.position,
                                     contact: user.contact,
-                                    office: user.office
+                                    office: user.office,
+                                    position: user.position
                                 })
                             })
                         })
@@ -894,7 +895,7 @@ function login(req,res){
                     else if (position == "TC"){
                         inventories.find({}, (err,zaloraInventory) => {
                             dispatchDB.find({}, (err,dispatch) => {
-                                res.render('dashboardTc', {
+                                res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
                                     name: user.name,
@@ -911,7 +912,7 @@ function login(req,res){
                         inventories.find({}, (err,zaloraInventory) => {
                             podDB.find({}, (err,pod) =>{
                                 dispatchDB.find({}, (err,dispatch) => {
-                                    res.render('dashboardWs', {
+                                    res.render('dashboard', {
                                         itemList: zaloraInventory,
                                         dispatch: dispatch,
                                         podList: pod,
@@ -928,7 +929,7 @@ function login(req,res){
                     else if (position == "WS"){
                         inventories.find({}, (err,zaloraInventory) => {
                             dispatchDB.find({}, (err,dispatch) => {
-                                res.render('dashboardWs', {
+                                res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
                                     name: user.name,
@@ -944,7 +945,7 @@ function login(req,res){
                     else if (position == "MW"){
                         inventories.find({}, (err,zaloraInventory) => {
                             dispatchDB.find({}, (err,dispatch) => {
-                                res.render('dashboardWa', {
+                                res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
                                     name: user.name,
@@ -962,7 +963,7 @@ function login(req,res){
                         inventories.find({}, (err,zaloraInventory) => {
                         podDB.find({}, (err,pod) =>{
                             dispatchDB.find({}, (err,dispatch) => {
-                                res.render('dashboardfi', {
+                                res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
                                     podList: pod,
