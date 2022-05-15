@@ -22,6 +22,7 @@
     <%}%>
 
   <body class="body-3">
+    <input type="hidden" value="<%= id %>">
     <% if(position == "AD"){%>
       <%- include('partials/admin/nav.ejs') %>
       <%- include('partials/admin/body.ejs') %>
@@ -32,19 +33,19 @@
     <%}%>
     <% if(position == "TC"){%>
       <%- include('partials/tc/nav.ejs') %>
-      <%- include('partials/tc/body.ejs') %>
+      <%- include('partials/tc/body.ejs') %>  
     <%}%>
     <% if(position == "WS"){%>
       <%- include('partials/ws/nav.ejs') %>
-      <%- include('partials/ws/body.ejs') %>
+      <%- include('partials/ws/body.ejs') %>      
     <%}%>
     <% if(position == "MW"){%>
       <%- include('partials/mw/nav.ejs') %>
-      <%- include('partials/mw/body.ejs') %>
+      <%- include('partials/mw/body.ejs') %>     
       <%}%>
     <% if(position == "FIN"){%>
       <%- include('partials/fin/nav.ejs') %>
-      <%- include('partials/fin/body.ejs') %>
+      <%- include('partials/fin/body.ejs') %>    
     <%}%>
     
   </body>

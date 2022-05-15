@@ -136,9 +136,10 @@ router.get('/podlistfi', (req,res) => {
 })
 
 //get list by product
-router.get('/list/ZALORA/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/ZALORA/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "ZALORA"
     
@@ -159,15 +160,19 @@ router.get('/list/ZALORA/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
         })
 })
 
-router.get('/list/PHARMACY/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/PHARMACY/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "PHARMACY"
     
@@ -188,15 +193,19 @@ router.get('/list/PHARMACY/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
         })
 })
 
-router.get('/list/GRP/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/GRP/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "GRP"
     
@@ -217,6 +226,9 @@ router.get('/list/GRP/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -224,9 +236,10 @@ router.get('/list/GRP/:area/:page/:limit', (req,res,next)=>{
 })
 
 //get list by product for warehouse
-router.get('/list/warehouse/ZALORA/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/warehouse/ZALORA/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "ZALORA"
 
@@ -247,15 +260,19 @@ router.get('/list/warehouse/ZALORA/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
         })
 })
 
-router.get('/list/warehouse/PHARMACY/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/warehouse/PHARMACY/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "PHARMACY"
     
@@ -276,15 +293,19 @@ router.get('/list/warehouse/PHARMACY/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
         })
 })
 
-router.get('/list/warehouse/GRP/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/warehouse/GRP/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "GRP"
     
@@ -305,6 +326,9 @@ router.get('/list/warehouse/GRP/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -312,9 +336,10 @@ router.get('/list/warehouse/GRP/:area/:page/:limit', (req,res,next)=>{
 })
 
 //get list by product for tc
-router.get('/list/tc/ZALORA/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/tc/ZALORA/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "ZALORA"
     
@@ -335,15 +360,19 @@ router.get('/list/tc/ZALORA/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
         })
 })
 
-router.get('/list/tc/PHARMACY/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/tc/PHARMACY/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "PHARMACY"
     
@@ -364,15 +393,19 @@ router.get('/list/tc/PHARMACY/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
         })
 })
 
-router.get('/list/tc/GRP/:area/:page/:limit', (req,res,next)=>{
+router.get('/list/tc/GRP/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     let product = req.params.product || "GRP"
     
@@ -393,6 +426,9 @@ router.get('/list/tc/GRP/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -400,9 +436,10 @@ router.get('/list/tc/GRP/:area/:page/:limit', (req,res,next)=>{
 })
 
 //get podlist by area
-router.get('/podlist/:area/:page/:limit', (req,res,next)=>{
+router.get('/podlist/:area/:page/:limit/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let area = req.params.area
     
     podDB
@@ -420,6 +457,9 @@ router.get('/podlist/:area/:page/:limit', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -427,9 +467,10 @@ router.get('/podlist/:area/:page/:limit', (req,res,next)=>{
 })
 
 //get podlist by name
-router.get('/podlist/:name', (req,res,next)=>{
+router.get('/podlist/:name/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let name = req.params.agentName.toUpperCase()
     
     podDB
@@ -446,6 +487,9 @@ router.get('/podlist/:name', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -453,9 +497,10 @@ router.get('/podlist/:name', (req,res,next)=>{
 })
 
 //get podlist by date
-router.get('/podlist/:date', (req,res,next)=>{
+router.get('/podlist/:date/:id', (req,res,next)=>{
     let limit = req.params.limit || 10
     let page = req.params.page || 1
+    let id = req.params._id
     let date = moment(req.params.date).format('DD/MM/YYYY')
     
     podDB
@@ -472,6 +517,9 @@ router.get('/podlist/:date', (req,res,next)=>{
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
                     pages: Math.ceil(count / limit)
                 })
             })
@@ -888,6 +936,7 @@ function login(req,res){
                                     office: user.office,
                                     position: user.position
                                 })
+                                console.log(user._id)
                             })
                         })
                         
@@ -898,6 +947,7 @@ function login(req,res){
                                 res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
+                                    id: user._id,
                                     name: user.name,
                                     icNumber: user.icNumber,
                                     position: user.position,
@@ -916,6 +966,7 @@ function login(req,res){
                                         itemList: zaloraInventory,
                                         dispatch: dispatch,
                                         podList: pod,
+                                        id: user._id,
                                         name: user.name,
                                         icNumber: user.icNumber,
                                         position: user.position,
@@ -932,6 +983,7 @@ function login(req,res){
                                 res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
+                                    id: user._id,
                                     name: user.name,
                                     icNumber: user.icNumber,
                                     position: user.position,
@@ -948,6 +1000,7 @@ function login(req,res){
                                 res.render('dashboard', {
                                     itemList: zaloraInventory,
                                     dispatch: dispatch,
+                                    id: user._id,
                                     name: user.name,
                                     icNumber: user.icNumber,
                                     position: user.position,
@@ -964,13 +1017,14 @@ function login(req,res){
                         podDB.find({}, (err,pod) =>{
                             dispatchDB.find({}, (err,dispatch) => {
                                 res.render('dashboard', {
-                                    itemList: zaloraInventory,
-                                    dispatch: dispatch,
-                                    podList: pod,
-                                    name: user.name,
-                                    icNumber: user.icNumber,
-                                    position: user.position,
-                                    contact: user.contact,
+                                            itemList: zaloraInventory,
+                                            dispatch: dispatch,
+                                            podList: pod,
+                                            id: user._id,
+                                            name: user.name,
+                                            icNumber: user.icNumber,
+                                            position: user.position,
+                                            contact: user.contact,
                                             office: user.office
                                         })
                                     })
@@ -1160,7 +1214,8 @@ router.post('/success', (req,res) => {
 })
 
 //Zalora Self Collect
-router.get('/selfcollect', (req,res) => {
+router.get('/selfcollect/:id', (req,res) => {
+    let id = req.params._id
     res.render('selfCollect', {
         name: currentUser.name,
         icNumber: currentUser.icNumber,
