@@ -36,17 +36,17 @@ router.get('/tookout', (req,res)=>{
 
 router.post('/editSuccess', (req,res)=>{
     if (req.body.formMETHOD == "editTC"){
+        console.log(req.body.formMETHOD)
         editSubmitTC(req,res)
     }
     else if (req.body.formMETHOD == "editWH"){
+        console.log(req.body.formMETHOD)
         editSubmitWH(req,res)
     }
     else{
         alert(`Failed to update data.`)
     }
 })
-
-
 
 function editSubmitTC(req,res){
     let tracker = req.body.trackingNumber
