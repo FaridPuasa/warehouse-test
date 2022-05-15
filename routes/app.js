@@ -25,9 +25,27 @@ const delischedule = require('../models/delischedule');
 
 let currentUser = {}
 
-router.get('/dash', (req,res)=>{
-    res.render('dashboard')
+router.post('/searchDetails', (req,res)=>{
+    searchDetails(req,res)
 })
+
+function searchDetails(req,res){
+    let find = req.body.search
+    inventories.find({trackingNumber: find},(err,result)=>{
+        if(result){
+            console.log(result)
+           // alert(result)
+            res.render('searchDetails', {
+               result: result,
+               moment:moment,
+            })
+        }
+        else{
+            console.log(err)
+            alert(err)
+        }
+    })
+}
 
 router.get('/tookout', (req,res)=>{
     console.log(req.body.trackingNumber)
