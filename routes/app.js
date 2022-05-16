@@ -29,6 +29,14 @@ router.post('/searchDetails', (req,res)=>{
     searchDetails(req,res)
 })
 
+router.post('/searchDetailsWH', (req,res)=>{
+    searchDetailsWH(req,res)
+})
+
+router.post('/searchDetailsTC', (req,res)=>{
+    searchDetailsTC(req,res)
+})
+
 function searchDetails(req,res){
     let find = req.body.search
     inventories.find({trackingNumber: find},(err,result)=>{
@@ -38,6 +46,55 @@ function searchDetails(req,res){
             res.render('searchDetails', {
                result: result,
                moment:moment,
+            })
+        }
+        else{
+            console.log(err)
+            alert(err)
+        }
+    })
+}
+
+function searchDetailsTC(req,res){
+    let find = req.body.search
+    inventories.find({trackingNumber: find},(err,result)=>{
+        if(result){
+            console.log(result)
+           // alert(result)
+            res.render('searchDetailsTC', {
+               result: result,
+               moment:moment,
+               name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
+            })
+        }
+        else{
+            console.log(err)
+            alert(err)
+        }
+    })
+}
+
+function searchDetailsWH(req,res){
+    let find = req.body.search
+    console.log(currentUser)
+    inventories.find({trackingNumber: find},(err,result)=>{
+        if(result){
+            console.log(result)
+           // alert(result)
+            res.render('searchDetailsWH', {
+               result: result,
+               moment:moment,
+               name: currentUser.name,
+                    icNumber: currentUser.icNumber,
+                    position: currentUser.position,
+                    contact: currentUser.contact,
+                    id: currentUser._id,
+                    office: currentUser.office,
             })
         }
         else{
