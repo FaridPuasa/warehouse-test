@@ -4,13 +4,60 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sidebars/">
+    <!-- Bootstrap 5.2.0 CSS Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/public/style.css">
-    <title>success</title>
+    
+    <title></title>
 </head>
 <body>
+   <div class="container p-5">
+       <h1 class="text-center">Item In</h1>
+       <div class="row justify-content-evenly">
+        <form action="/itemin" method="POST" class="">
+           <div class="col-4">
+                <div class="mb-3">
+                    <label for="trackingNumber" class="form-label">Tracking Number</label>
+                    <input type="text" class="form-control" id="trackingNumber" name="trackingNumber">
+                </div>
+        
+                <div class="mb-3">
+                    <label for="parcelNumber" class="form-label">Parcel Number</label>
+                    <input type="text" class="form-control" id="parcelNumber" name="parcelNumber">
+                </div>
+           </div>
+
+           <div class="col-4">
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <input type="text" class="form-control" id="area" name="area">
+                </div>
+        
+                <div class="mb-3">
+                    <label for="dateArrive" class="form-label">Date Arrive</label>
+                    <input type="date" class="form-control" id="dateArrive" name="dateArrive">
+                </div>
+           </div>
+
+           <input type="text" name="name" id="cust_name" value="" hidden>
+           <input type="text" name="address" id="cust_address" value="" hidden>
+           <input type="text" name="contact" id="cust_contact" value="" hidden>
+           <input type="text" name="tag" id="cust_tag" value="" hidden>
+           <input type="text" name="value" id="cust_value" value="" hidden>
+           <input type="text" name="status" value="IN WAREHOUSE" hidden>
+           
+           <input type="text" name="formMETHOD" value="ZALORAIN" hidden>
+          
+         </form>
+       </div>
+       <button type="submit" class="btn btn-primary px-auto">Submit</button>
+   </div>
    
-
-
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+        <script src="/js/sidebars.js"></script>
 </body>
 </html>
 

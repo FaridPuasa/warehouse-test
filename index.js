@@ -5,6 +5,34 @@ const routes = require('./routes/app');
 const bodyParser = require('body-parser')
 const socketIO = require('socket.io')
 const http = require('http')
+const nodemailer = require('nodemailer')
+require('dotenv').config()
+
+/*
+console.log(process.env.EMAIL)
+//Step 1
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth:{
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+    }
+})
+
+//step 2
+let mailOptions = {
+    from: 'farid.puasa@globex.com.bn',
+    to: 'redpuasa@gmail.com',
+    subject: 'Testing',
+    text: ' asjfas'
+}
+
+//step 3
+transporter.sendMail(mailOptions, (err,data)=>{
+    if (err) return console.log(err)
+    else return console.log("Email Sent")
+})
+*/
 
 //Server setup
 let server = http.createServer(app)
@@ -17,8 +45,6 @@ app.use(session({
     saveUninitialized: false,
     resave: true
 }))
-
-
 
 app.use(express.urlencoded({extended:true}))
 app.use(bodyParser.json())

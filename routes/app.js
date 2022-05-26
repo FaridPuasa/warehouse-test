@@ -14,7 +14,7 @@ const userDB = require('../models/user')
 const podDB = require('../models/pod');
 const dispatchDB = require('../models/dispatch');
 const exportDB = require('../models/exportReturn');
-const grpMalaysiaDB = require('../models/grpMalaysia');
+//const grpMalaysiaDB = require('../models/grpMalaysia');
 
 //middlewares
 const { findOne, findOneAndUpdate, listenerCount } = require('../models/inventories');
@@ -24,6 +24,10 @@ const res = require('express/lib/response');
 const delischedule = require('../models/delischedule');
 
 let currentUser = {}
+
+router.get('/run', (req,res)=>{
+    res.render('./layout/main')
+})
 
 router.post('/searchDetails', (req,res)=>{
     searchDetails(req,res)
@@ -129,7 +133,7 @@ function editSubmitTC(req,res){
     let filter = {trackingNumber: tracker}
     let update = {adress: req.body.adress, contact: req.body.contact,area: req.body.area, areaIndicator: req.body.areaIndicator,
         $push: {
-            editHistory: {
+                editHistory: {
                 oldAddress: req.body.oldAddress,
                 oldContact: req.body.oldContact,
                 oldArea: req.body.oldArea,
@@ -193,34 +197,26 @@ router.get('/podlistfi', (req,res) => {
 })
 
 //get list by product
-router.get('/list/ZALORA/:area/:page/:limit/:id', (req,res,next)=>{
-    let limit = req.params.limit || 10
-    let page = req.params.page || 1
-    let id = req.params._id
-    let area = req.params.area
+router.get('/list/ZALORA/', (req,res,next)=>{
     let product = req.params.product || "ZALORA"
     
     inventories
-        .find({product: product, area: area})
+        .find({product: product})
         .sort({entryDate: -1})
         .exec(function(err, inventory) {
-            inventories.count({area:area}).exec(function(err, count) {
+            inventories.count({}).exec(function(err, count) {
                 if (err) return next(err)
                 res.render('itemList1', {
                     moment: moment,
-                    area: area,
                     product: product,
                     itemList: inventory,
                     total: count,
-                    current: page,
-                    limit: limit,
                     name: currentUser.name,
                     icNumber: currentUser.icNumber,
                     position: currentUser.position,
                     contact: currentUser.contact,
                     id: currentUser._id,
                     office: currentUser.office,
-                    pages: Math.ceil(count / limit)
                 })
             })
         })
