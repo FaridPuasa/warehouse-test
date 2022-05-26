@@ -1,0 +1,55 @@
+<div class="container p-5">
+    <h1 class="text-center">Item In</h1>
+    <form action="/itemin" method="POST" class="m-5">
+    <div class="row">
+        <div class="col">
+            <label for="trackingNumber" class="form-label">Tracking Number</label>
+            <input type="text" class="form-control" placeholder="Tracking Number" aria-label="trackingNumber" name="trackingNumber">
+        </div>
+        
+        <div class="col">
+            <label for="parcelNumber" class="form-label">Parcel Number</label>
+            <input type="text" class="form-control" placeholder="Parcel Number" aria-label="parcelNumber" name="parcelNumber"
+        </div>
+
+        <div class="col">
+            <label for="area" class="form-label">Area</label>
+            <select class="form-control" aria-label="area" name="area">
+                <option selected>Select Area:</option>
+                <option value="1">B1</option>
+                <option value="2">B2</option>
+                <option value="3">G1</option>
+                <option value="1">G2</option>
+                <option value="2">JT1</option>
+                <option value="3">JT2</option>
+                <option value="1">JT3</option>
+                <option value="2">Tutong</option>
+                <option value="3">KB</option>
+                <option value="3">Seria</option>
+                <option value="3">Lumut</option>
+                <option value="3">Temburong</option>
+            </select>
+        </div>
+
+        <div class="col">
+            <label for="dateArrive" class="form-label">Date Arrive</label>
+            <input type="date" class="form-control" id="dateArrive" name="dateArrive">
+        </div>
+    </div>
+
+        <input type="text" name="name" id="cust_name" value="" hidden>
+        <input type="text" name="address" id="cust_address" value="" hidden>
+        <input type="text" name="contact" id="cust_contact" value="" hidden>
+        <input type="text" name="tag" id="cust_tag" value="" hidden>
+        <input type="text" name="value" id="cust_value" value="" hidden>
+        <input type="text" name="status" value="IN WAREHOUSE" hidden>
+       
+        <input type="text" name="formMETHOD" value="ZALORAIN" hidden>
+        <div class="row mt-3">
+            <div class="col d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+     </form>
+   </div>
+</div>

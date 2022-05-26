@@ -26,7 +26,19 @@ const delischedule = require('../models/delischedule');
 let currentUser = {}
 
 router.get('/run', (req,res)=>{
-    res.render('./layout/main')
+    inventories.find({}, (err,inventory) => {
+        res.render('./layout/main', {
+            itemList: inventory,
+            moment: moment,
+            id: user._id,
+            name: user.name,
+            icNumber: user.icNumber,
+            position: user.position,
+            contact: user.contact,
+            office: user.office,
+            position: user.position
+        })
+    })
 })
 
 router.post('/searchDetails', (req,res)=>{
